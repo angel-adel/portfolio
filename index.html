@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adel · Портфолио разработчика</title>
+    <style>
+        /* ===== Базовые стили ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0B0E14;
+            color: #D6E3F0;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== Заголовок ===== */
+        .header {
+            text-align: center;
+            padding: 2rem 0 3rem 0;
+            border-bottom: 1px solid #1F2A3A;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: #E8F0F8;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 span {
+            color: #4A90E2;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #8AA4C4;
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        .header .contacts {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header .contacts a {
+            color: #8AA4C4;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid #1F2A3A;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+        }
+
+        .header .contacts a:hover {
+            background: #1F2A3A;
+            color: #E8F0F8;
+            border-color: #4A90E2;
+        }
+
+        /* ===== Сетка карточек ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* ===== Карточка ===== */
+        .card {
+            background: #131A26;
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 1px solid #1F2A3A;
+            transition: transform 0.15s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            border-color: #2A3A52;
+            transform: translateY(-4px);
+        }
+
+        .card h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #E8F0F8;
+            margin-bottom: 0.2rem;
+        }
+
+        .card .tag {
+            font-size: 0.8rem;
+            color: #4A90E2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #1F2A3A;
+            padding-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #B0C8E0;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .card ul {
+            list-style: none;
+            margin: 0 0 1.5rem 0;
+            padding: 0;
+        }
+
+        .card ul li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+            color: #B0C8E0;
+            border-bottom: 1px solid #0F161F;
+        }
+
+        .card ul li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #4A90E2;
+        }
+
+        .card .video-btn {
+            display: inline-block;
+            background: #1F2A3A;
+            color: #E8F0F8;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .card .video-btn:hover {
+            background: #2A3A52;
+            border-color: #4A90E2;
+        }
+
+        .card .site-btn {
+            display: inline-block;
+            background: #4A90E2;
+            color: #0B0E14;
+            padding: 0.7rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            transition: all 0.2s ease;
+            text-align: center;
+            flex-shrink: 0;
+            border: 1px solid #4A90E2;
+        }
+
+        .card .site-btn:hover {
+            background: #7AA9F5;
+            border-color: #7AA9F5;
+        }
+
+        .card .btn-group {
+            margin-top: auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* ===== Скриншоты в карточке ===== */
+        .screenshots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1rem 0 1.2rem 0;
+        }
+
+        .screenshots a {
+            flex: 1 1 120px;
+            min-width: 100px;
+            border-radius: 12px;
+            border: 1px solid #1F2A3A;
+            overflow: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        .screenshots a:hover {
+            opacity: 0.85;
+        }
+
+        .screenshots img {
+            width: 100%;
+            height: auto;
+            display: block;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: #0B0E14;
+        }
+
+        .screenshot-label {
+            font-size: 0.7rem;
+            color: #5A7A9A;
+            text-align: center;
+            margin-top: -0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ===== Особенности (теги) ===== */
+        .feature-badge {
+            display: inline-block;
+            background: #0F161F;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #8AA4C4;
+            border: 1px solid #1F2A3A;
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ===== Подвал ===== */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1F2A3A;
+            text-align: center;
+            color: #5A7A9A;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #4A90E2;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== Адаптив ===== */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .card .btn-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .card .video-btn,
+            .card .site-btn {
+                margin: 0.3rem 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== ШАПКА ===== -->
+        <div class="header">
+            <h1>Adel <span>·</span> Портфолио</h1>
+            <p>Разработчик · автоматизация · чистый код</p>
+            <div class="contacts">
+                <a href="https://t.me/yourtelegram" target="_blank">✈️ Telegram</a>
+                <a href="mailto:your@email.com">📧 Почта</a>
+                <a href="https://github.com/angel-adel" target="_blank">🐙 GitHub</a>
+            </div>
+        </div>
+
+        <!-- ===== СЕТКА ПРОЕКТОВ ===== -->
+        <div class="projects-grid">
+
+            <!-- ====== 1. SMART SOCIAL ====== -->
+            <div class="card">
+                <div class="tag">Социальная сеть · Боевой проект</div>
+                <h2>Smart Social</h2>
+                <p>
+                    Лёгкая соцсеть для общения без мусора. Главная фишка — сайт «засыпает» через 15 минут бездействия
+                    (экономия ресурсов хостинга) и просыпается за 2–3 секунды при визите.
+                </p>
+                <div style="margin-bottom: 0.8rem;">
+                    <span class="feature-badge">🛌 Режим сна</span>
+                    <span class="feature-badge">🌙 Нет постов с 23:00 до 07:00</span>
+                    <span class="feature-badge">📝 Только текст и фото</span>
+                    <span class="feature-badge">🚫 Без рекламы и трекеров</span>
+                </div>
+                <div class="btn-group">
+                    <a href="https://youtube.com/shorts/NVFZs_S0sew?si=vlWi9Ti03GqjFDOL" target="_blank" class="video-btn">▶ Смотреть видео (1:16)</a>
+                    <a href="https://smartsocial-wyfr.onrender.com/" target="_blank" class="site-btn">Перейти на сайт</a>
+                </div>
+            </div>
+
+            <!-- ====== 2. ЛИТЕРАТУРНЫЙ АРХИВ ====== -->
+            <div class="card">
+                <div class="tag">Литературный проект · Сайт-витрина</div>
+                <h2>Литературный архив</h2>
+                <p>
+                    Личный сайт с прозой, стихами и заметками. Продуманная типографика, форма заказа и виджет для обратной связи.
+                </p>
+                <div style="margin-bottom: 0.8rem;">
+                    <span class="feature-badge">📖 Чистая типографика</span>
+                    <span class="feature-badge">📬 Форма заказа</span>
+                    <span class="feature-badge">🛠 Виджет баг-ремонта</span>
+                </div>
+                <div class="btn-group">
+                    <a href="https://youtube.com/shorts/itVsLhxYh8A?si=AtQjWe_wkwgn_clp" target="_blank" class="video-btn">▶ Смотреть видео (0:30)</a>
+                    <a href="http://angel-adel.github.io/angel/" target="_blank" class="site-btn">Перейти на сайт</a>
+                </div>
+            </div>
+
+            <!-- ====== 3. СКРИПТОНАЙЗЕР ====== -->
+            <div class="card">
+                <div class="tag">Десктопное приложение · Java</div>
+                <h2>Скриптонайзер 3.3.6</h2>
+                <p>
+                    Инструмент для операторов чатов поддержки. Вставка шаблонов в любое окно за 3 секунды.
+                </p>
+
+                <!-- СКРИНШОТЫ -->
+                <div class="screenshots">
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/Picsart_26-07-26_22-40-46-664.png" target="_blank">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/Picsart_26-07-26_22-40-46-664.png" alt="Интерфейс Скриптонайзера">
+                    </a>
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/cb86908b-ec0d-49fe-9fa1-bf9d25e2fcf8.jpeg" target="_blank">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/cb86908b-ec0d-49fe-9fa1-bf9d25e2fcf8.jpeg" alt="Группы скриптов">
+                    </a>
+                </div>
+                <div class="screenshot-label">
+                    ⚡ Скриншоты с тестовыми данными для демонстрации интерфейса
+                </div>
+
+                <ul>
+                    <li>Вставка за 3 секунды в любое активное окно (ЛКМ — отправить, ПКМ — предпросмотр)</li>
+                    <li>Режим «Поверх всех окон» и плавающая кнопка</li>
+                    <li>Группировка скриптов: создание, перенос, автоудаление групп</li>
+                    <li>⭐ Панель избранных шаблонов</li>
+                    <li>Импорт/экспорт в JSON, неограниченный объём текста</li>
+                    <li>Ранние версии на Python, финальная — на Java</li>
+                </ul>
+
+                <div class="btn-group">
+                    <span style="color: #5A7A9A; font-size: 0.85rem; padding: 0.4rem 0;">
+                        📂 Скрипты сгруппированы по темам для быстрого доступа
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== ПОДВАЛ ===== -->
+        <div class="footer">
+            <p>
+                ✦ 2026 · Adel · 
+                <a href="https://github.com/angel-adel" target="_blank">GitHub</a> · 
+                <a href="https://t.me/yourtelegram" target="_blank">Telegram</a>
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>
