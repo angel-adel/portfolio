@@ -3,9 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Портфолио разработчика Adel. Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
     <title>Adel · Портфолио разработчика</title>
     <style>
+        /* ===== CSS Переменные для удобного управления ===== */
+        :root {
+            --bg-primary: #0B0E14;
+            --bg-card: #131A26;
+            --bg-card-hover: #1A2332;
+            --accent: #4A90E2;
+            --accent-light: #7AA9F5;
+            --accent-glow: rgba(74, 144, 226, 0.25);
+            --text-primary: #E8F0F8;
+            --text-secondary: #8AA4C4;
+            --text-muted: #5A7A9A;
+            --border: #1F2A3A;
+            --radius: 16px;
+        }
+
         /* ===== Базовые стили ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,113 +33,130 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #0B0E14;
-            color: #D6E3F0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             padding: 2rem 1rem;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         /* ===== Заголовок ===== */
         .header {
-            text-align: center;
-            padding: 2rem 0 3rem 0;
-            border-bottom: 1px solid #1F2A3A;
+            text-align: center;            padding: 3rem 0 4rem 0;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 3rem;
         }
 
         .header h1 {
-            font-size: 2.8rem;
-            font-weight: 600;
-            color: #E8F0F8;
-            letter-spacing: -0.5px;
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
         }
 
         .header h1 span {
-            color: #4A90E2;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .header p {
-            font-size: 1.2rem;
-            color: #8AA4C4;
-            margin-top: 0.5rem;
-            font-weight: 300;
+        .header .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .bio {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 1.5rem auto;
+            line-height: 1.6;
         }
 
         .header .contacts {
-            margin-top: 1.5rem;
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
         .header .contacts a {
-            color: #8AA4C4;
+            color: var(--text-secondary);
             text-decoration: none;
-            font-size: 1rem;
-            padding: 0.4rem 1.2rem;
-            border: 1px solid #1F2A3A;
-            border-radius: 30px;
-            transition: all 0.2s ease;
-        }
+            font-size: 0.95rem;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);        }
 
         .header .contacts a:hover {
-            background: #1F2A3A;
-            color: #E8F0F8;
-            border-color: #4A90E2;
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
         }
 
         /* ===== Сетка карточек ===== */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         /* ===== Карточка ===== */
         .card {
-            background: #131A26;
-            border-radius: 20px;
-            padding: 1.8rem;
-            border: 1px solid #1F2A3A;
-            transition: transform 0.15s ease, border-color 0.2s ease;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
         }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
 
         .card:hover {
-            border-color: #2A3A52;
-            transform: translateY(-4px);
-        }
-
-        .card h2 {
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: #E8F0F8;
-            margin-bottom: 0.2rem;
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
         }
 
         .card .tag {
-            font-size: 0.8rem;
-            color: #4A90E2;
+            font-size: 0.75rem;
+            color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 1rem;
-            border-bottom: 1px solid #1F2A3A;
-            padding-bottom: 0.5rem;
         }
 
         .card p {
-            color: #B0C8E0;
+            color: var(--text-secondary);
             margin-bottom: 1.2rem;
             font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         .card ul {
@@ -129,158 +166,167 @@
         }
 
         .card ul li {
-            padding: 0.3rem 0;
+            padding: 0.4rem 0;
             padding-left: 1.5rem;
             position: relative;
             font-size: 0.9rem;
-            color: #B0C8E0;
-            border-bottom: 1px solid #0F161F;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .card ul li:last-child {
+            border-bottom: none;
         }
 
         .card ul li::before {
             content: "▹";
             position: absolute;
             left: 0;
-            color: #4A90E2;
+            color: var(--accent);
+            font-weight: bold;
         }
 
-        .card .video-btn {
-            display: inline-block;
-            background: #1F2A3A;
-            color: #E8F0F8;
-            padding: 0.7rem 1.5rem;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin: 0.5rem 0.5rem 0.5rem 0;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .card .video-btn:hover {
-            background: #2A3A52;
-            border-color: #4A90E2;
-        }
-
-        .card .site-btn {
-            display: inline-block;
-            background: #4A90E2;
-            color: #0B0E14;
-            padding: 0.7rem 1.8rem;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin: 0.5rem 0.5rem 0.5rem 0;
-            transition: all 0.2s ease;
-            text-align: center;
-            flex-shrink: 0;
-            border: 1px solid #4A90E2;
-        }
-
-        .card .site-btn:hover {
-            background: #7AA9F5;
-            border-color: #7AA9F5;
-        }
-
-        .card .btn-group {
+        /* ===== Кнопки ===== */
+        .btn-group {
             margin-top: auto;
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
-            gap: 0.3rem;
+            gap: 0.8rem;
         }
 
-        /* ===== Скриншоты в карточке ===== */
+        .btn {            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-muted);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0B0E14;
+            border: 1px solid var(--accent);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* ===== Скриншоты ===== */
         .screenshots {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.8rem;
             margin: 1rem 0 1.2rem 0;
         }
 
         .screenshots a {
-            flex: 1 1 120px;
-            min-width: 100px;
             border-radius: 12px;
-            border: 1px solid #1F2A3A;
-            overflow: hidden;
-            transition: opacity 0.2s ease;
+            border: 1px solid var(--border);
+            overflow: hidden;            transition: all 0.3s ease;
+            background: var(--bg-primary);
         }
 
         .screenshots a:hover {
-            opacity: 0.85;
+            border-color: var(--accent);
+            transform: scale(1.03);
         }
 
         .screenshots img {
             width: 100%;
-            height: auto;
+            height: 100%;
             display: block;
-            aspect-ratio: 16/9;
+            aspect-ratio: 16/10;
             object-fit: cover;
-            background: #0B0E14;
+            transition: transform 0.3s ease;
+        }
+
+        .screenshots a:hover img {
+            transform: scale(1.1);
         }
 
         .screenshot-label {
-            font-size: 0.7rem;
-            color: #5A7A9A;
+            font-size: 0.75rem;
+            color: var(--text-muted);
             text-align: center;
             margin-top: -0.5rem;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            font-style: italic;
         }
 
-        /* ===== Особенности (теги) ===== */
+        /* ===== Бейджи ===== */
         .feature-badge {
             display: inline-block;
-            background: #0F161F;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
+            background: rgba(74, 144, 226, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
             font-size: 0.75rem;
-            color: #8AA4C4;
-            border: 1px solid #1F2A3A;
-            margin-right: 0.3rem;
-            margin-bottom: 0.3rem;
+            color: var(--accent-light);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
         }
 
         /* ===== Подвал ===== */
         .footer {
-            margin-top: 4rem;
+            margin-top: 5rem;
             padding-top: 2rem;
-            border-top: 1px solid #1F2A3A;
-            text-align: center;
-            color: #5A7A9A;
+            border-top: 1px solid var(--border);
+            text-align: center;            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
         .footer a {
-            color: #4A90E2;
+            color: var(--accent);
             text-decoration: none;
+            transition: color 0.2s;
         }
 
         .footer a:hover {
+            color: var(--accent-light);
             text-decoration: underline;
+        }
+
+        /* ===== Анимации ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== Адаптив ===== */
         @media (max-width: 600px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-            .card .btn-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .card .video-btn,
-            .card .site-btn {
-                margin: 0.3rem 0;
-                text-align: center;
-            }
+            .header h1 { font-size: 2.2rem; }
+            .header .subtitle { font-size: 1.1rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .card { padding: 1.5rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
@@ -288,71 +334,73 @@
     <div class="container">
 
         <!-- ===== ШАПКА ===== -->
-        <div class="header">
-            <h1>Adel <span>·</span> Портфолио</h1>
-            <p>Разработчик · автоматизация · чистый код</p>
-            <p>Ádel-технический псевдоним разработчика. Настоящее имя Торопцев Дмитрий Сергеевич (22.07.1996 г.р.)</p>
-            <div class="contacts">
-                <a href="https://max.ru/channel_SmartSocial_news" target="_blank">✈️ MAX</a>
+        <header class="header">
+            <h1>Adel <span>·</span> Portfolio</h1>
+            <p class="subtitle">Разработчик · Автоматизация · Чистый код</p>
+            <p class="bio">
+                Создаю удобные десктопные приложения и веб-сервисы. 
+                Фокус на производительности, минимализме и решении реальных задач.
+            </p>
+            <div class="contacts">                <a href="https://max.ru/channel_SmartSocial_news" target="_blank" rel="noopener">✈️ MAX</a>
                 <a href="mailto:adel.angel2026@gmail.com">📧 Почта</a>
-                <a href="https://github.com/angel-adel" target="_blank">🐙 GitHub</a>
+                <a href="https://github.com/angel-adel" target="_blank" rel="noopener">🐙 GitHub</a>
             </div>
-        </div>
+        </header>
 
         <!-- ===== СЕТКА ПРОЕКТОВ ===== -->
-        <div class="projects-grid">
+        <main class="projects-grid">
 
             <!-- ====== 1. SMART SOCIAL ====== -->
-            <div class="card">
+            <article class="card">
                 <div class="tag">Социальная сеть · Боевой проект</div>
                 <h2>Smart Social</h2>
                 <p>
-                    Лёгкая соцсеть для общения без мусора. Главная фишка — сайт «засыпает» через 15 минут бездействия
-                    (экономия ресурсов хостинга) и просыпается за 2–3 секунды при визите.
+                    Лёгкая соцсеть для общения без информационного шума. Главная фишка — сайт «засыпает» через 15 минут бездействия, экономя ресурсы хостинга, и просыпается за 2–3 секунды при визите.
                 </p>
-                <div style="margin-bottom: 0.8rem;">
+                <div style="margin-bottom: 1.2rem;">
                     <span class="feature-badge">🛌 Режим сна</span>
-                    <span class="feature-badge">🌙 Нет постов с 23:00 до 07:00</span>
+                    <span class="feature-badge">🌙 Digital Detox (23:00–07:00)</span>
                     <span class="feature-badge">📝 Только текст и фото</span>
                     <span class="feature-badge">🚫 Без рекламы и трекеров</span>
                 </div>
                 <div class="btn-group">
-                    <a href="https://youtube.com/shorts/NVFZs_S0sew?si=vlWi9Ti03GqjFDOL" target="_blank" class="video-btn">▶ Смотреть видео (1:16)</a>
+                    <a href="https://smartsocial-xi.vercel.app" target="_blank" rel="noopener" class="btn btn-primary">🚀 Vercel</a>
+                    <a href="https://angel-adel.github.io/smartsocial" target="_blank" rel="noopener" class="btn btn-secondary">📄 GitHub Pages</a>
+                    <a href="https://youtube.com/shorts/NVFZs_S0sew?si=vlWi9Ti03GqjFDOL" target="_blank" rel="noopener" class="btn btn-secondary">▶ Демо (1:16)</a>
                 </div>
-            </div>
+            </article>
 
             <!-- ====== 2. ЛИТЕРАТУРНЫЙ АРХИВ ====== -->
-            <div class="card">
-                <div class="tag">Литературный проект · Сайт-витрина</div>
+            <article class="card">
+                <div class="tag">Веб-сайт · Литературный проект</div>
                 <h2>Литературный архив</h2>
                 <p>
-                    Личный сайт с прозой, стихами и заметками. Продуманная типографика, форма заказа и виджет для обратной связи.
+                    Персональный сайт-витрина с прозой, стихами и заметками. Акцент на читабельности, продуманной типографике и удобной форме обратной связи.
                 </p>
-                <div style="margin-bottom: 0.8rem;">
+                <div style="margin-bottom: 1.2rem;">
                     <span class="feature-badge">📖 Чистая типографика</span>
                     <span class="feature-badge">📬 Форма заказа</span>
                     <span class="feature-badge">🛠 Виджет баг-ремонта</span>
                 </div>
                 <div class="btn-group">
-                    <a href="https://youtube.com/shorts/itVsLhxYh8A?si=AtQjWe_wkwgn_clp" target="_blank" class="video-btn">▶ Смотреть видео (0:30)</a>
-                    <a href="http://angel-adel.github.io/angel/" target="_blank" class="site-btn">Перейти на сайт</a>
+                    <a href="https://angel-adel.github.io/angel/" target="_blank" rel="noopener" class="btn btn-primary">🌐 Перейти на сайт</a>
+                    <a href="https://youtube.com/shorts/itVsLhxYh8A?si=AtQjWe_wkwgn_clp" target="_blank" rel="noopener" class="btn btn-secondary">▶ Демо (0:30)</a>
                 </div>
-            </div>
+            </article>
 
             <!-- ====== 3. СКРИПТОНАЙЗЕР ====== -->
-            <div class="card">
-                <div class="tag">Десктопное приложение · Java</div>
-                <h2>Скриптонайзер 3.3.6</h2>
+            <article class="card">
+                <div class="tag">Десктопное приложение · Java</div>                <h2>Скриптонайзер 3.3.6</h2>
                 <p>
-                    Инструмент для операторов чатов поддержки. Вставка шаблонов в любое окно за 3 секунды.
+                    Инструмент для операторов чатов поддержки. Вставка готовых шаблонов ответов в любое активное окно за 3 секунды.
                 </p>
 
                 <!-- СКРИНШОТЫ -->
                 <div class="screenshots">
-                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/Picsart_26-07-26_22-40-46-664.png" target="_blank">
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/Picsart_26-07-26_22-40-46-664.png" target="_blank" rel="noopener">
                         <img src="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/Picsart_26-07-26_22-40-46-664.png" alt="Интерфейс Скриптонайзера">
                     </a>
-                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/cb86908b-ec0d-49fe-9fa1-bf9d25e2fcf8.jpeg" target="_blank">
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/cb86908b-ec0d-49fe-9fa1-bf9d25e2fcf8.jpeg" target="_blank" rel="noopener">
                         <img src="https://raw.githubusercontent.com/angel-adel/portfolio/refs/heads/main/cb86908b-ec0d-49fe-9fa1-bf9d25e2fcf8.jpeg" alt="Группы скриптов">
                     </a>
                 </div>
@@ -370,23 +418,23 @@
                 </ul>
 
                 <div class="btn-group">
-                    <span style="color: #5A7A9A; font-size: 0.85rem; padding: 0.4rem 0;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem; padding: 0.4rem 0; width: 100%; text-align: center;">
                         📂 Скрипты сгруппированы по темам для быстрого доступа
                     </span>
                 </div>
-            </div>
+            </article>
 
-        </div>
+        </main>
 
         <!-- ===== ПОДВАЛ ===== -->
-        <div class="footer">
+        <footer class="footer">
             <p>
                 ✦ 2026 · Adel · 
-                <a href="https://github.com/angel-adel" target="_blank">GitHub</a> · 
-                <a href="https://max.ru/channel_SmartSocial_news" target="_blank">Канал в МАХ</a>
+                <a href="https://github.com/angel-adel" target="_blank" rel="noopener">GitHub</a> · 
+                <a href="https://max.ru/channel_SmartSocial_news" target="_blank" rel="noopener">Канал в MAX</a>
             </p>
-        </div>
+        </footer>
 
     </div>
 </body>
-</html>
+                        </html>
