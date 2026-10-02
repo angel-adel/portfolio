@@ -500,7 +500,7 @@
                     <li>Ползунок прозрачности от 50 до 255</li>
                     <li>Сохранение и загрузка заметок в .txt</li>
                     <li>Работа в системном трее Windows</li>
-                    <li>Автообновление: Программа теперь самостоятельно проверяет наличие новых версий на GitHub, <br>скачивает обновление и бесшовно заменяет старый файл через фоновый скрипт. <br>(Должна быть отключена настройк4а безопасности выашей ОС, <br>поскольку бесшовное обновление не всегда помогает корректно открыть портативные файлы!</li>
+                    <li>Автообновление: Программа теперь самостоятельно проверяет наличие новых версий на GitHub, <br>скачивает обновление и бесшовно заменяет старый файл через фоновый скрипт. <br>(Должна быть отключена настройка безопасности вашей ОС, <br>поскольку бесшовное обновление не всегда помогает корректно открыть портативные файлы!)</li>
                     <li>Встроенная иконка: Поддержка кастомной иконки приложения для системного трея и заголовка окна.</li>
                     <li>Список заметок в трее с возможностью открыть нужную</li>
 
@@ -551,6 +551,61 @@
     <a href="https://github.com/angel-adel/programms/releases/download/2.0/ST.exe" target="_blank" rel="noopener" class="btn btn-secondary">📂 Скачать ST.exe</a>
 </div>
             </article>
+
+                                    <!-- ====== 2. S-CONNECT (ANDROID) ====== -->
+            <article class="card">
+                <div class="tag">Android-приложение · Kotlin · Jetpack Compose</div>
+                <h2>S-Connect</h2>
+                <p>
+                    Мессенджер для экосистемы Smart Social. Единая учётная запись: логин в мессенджере = аккаунт в соцсети.
+                    Realtime-обмен сообщениями, сторис с автоочисткой, синхронизация данных между двумя приложениями.
+                </p>
+
+                <!-- СКРИНШОТЫ -->
+                <div class="screenshots">
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-1.png" target="_blank" rel="noopener">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-1.png" alt="Экран логина">
+                    </a>
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-2.png" target="_blank" rel="noopener">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-2.png" alt="Список чатов с лентой сторис">
+                    </a>
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-3.png" target="_blank" rel="noopener">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-3.png" alt="Просмотр сторис">
+                    </a>
+                    <a href="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-4.png" target="_blank" rel="noopener">
+                        <img src="https://raw.githubusercontent.com/angel-adel/portfolio/main/s-connect-4.png" alt="Профиль">
+                    </a>
+                </div>
+                <div class="screenshot-label">
+                    ⚡ Логин, чаты с лентой сторис, просмотр сторис, профиль
+                </div>
+
+                <div style="margin-bottom: 1.2rem;">
+                    <span class="feature-badge">💬 Realtime-чаты</span>
+                    <span class="feature-badge">📸 Сторис</span>
+                    <span class="feature-badge">🔄 Синхронизация с соцсетью</span>
+                    <span class="feature-badge">🔍 Поиск</span>
+                    <span class="feature-badge">🎨 Material 3</span>
+                </div>
+
+                <ul>
+                    <li>Kotlin + Jetpack Compose (Material 3, темы)</li>
+                    <li>Supabase: Auth, Realtime, Storage, PostgREST</li>
+                    <li>RLS-политики на таблицах и Storage</li>
+                    <li>Оптимизация запросов: N+1 → 3 запроса</li>
+                    <li>Retry при нестабильной сети</li>
+                    <li>Сторис: публикация, лента, полноэкранный просмотр</li>
+                    <li>Автоочистка сторис через pg_cron (24 часа)</li>
+                    <li>Единая система идентичности с веб-версией</li>
+                </ul>
+
+                <div class="btn-group">
+                    <a href="https://github.com/angel-adel/s-connect" target="_blank" rel="noopener" class="btn btn-primary">🐙 GitHub</a>
+                    <span style="color: var(--text-muted); font-size: 0.85rem; padding: 0.4rem 0; width: 100%; text-align: center;">
+                        📂 Android 7.0+ · Внутренняя раскатка
+                    </span>
+                </div>
+            </article>
             
         </main>
 
@@ -565,4 +620,8 @@
 
     </div>
 </body>
-                        </html>
+</html>
+
+
+
+
