@@ -638,12 +638,7 @@
         </footer>
     </div>
 
-    <!-- Кнопка переключения темы -->
-    <div class="theme-toggle" id="themeToggle" title="Сменить тему">🌙</div>
-
-        <!-- В самом низу, перед </body> -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <!-- Подключаем библиотеку Supabase (если её нет в head) -->
+        <!-- Подключаем Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -652,6 +647,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // --- ЗАГРУЗКА ПОРТФОЛИО ---
         async function loadPortfolio() {
             const grid = document.querySelector('.projects-grid');
             
@@ -664,12 +660,10 @@
 
                 if (error) throw error;
 
-                // Если в базе есть проекты — полностью заменяем содержимое сетки
                 if (projects && projects.length > 0) {
                     grid.innerHTML = '';
 
                     projects.forEach((p, index) => {
-                        // Бейджи
                         let badgesHtml = '';
                         if (p.features && p.features.length > 0) {
                             badgesHtml = '<div style="margin-bottom: 1.2rem;">';
@@ -679,7 +673,6 @@
                             badgesHtml += '</div>';
                         }
 
-                        // Картинка
                         let imageHtml = '';
                         if (p.image_url) {
                             imageHtml = `
@@ -689,7 +682,6 @@
                             `;
                         }
 
-                        // Список
                         let listHtml = '';
                         if (p.details && p.details.length > 0) {
                             listHtml = '<ul>';
@@ -699,7 +691,6 @@
                             listHtml += '</ul>';
                         }
 
-                        // Кнопка
                         let buttonHtml = '';
                         if (p.link_url) {
                             buttonHtml = `
@@ -728,20 +719,53 @@
                         grid.appendChild(card);
                     });
 
-                    // Перепривязываем аккордеон
-                    document.querySelectorAll('.card').forEach(card => {
-                        card.addEventListener('click', (e) => {
-                            if (e.target.closest('a')) return;
-                            card.classList.toggle('active');
-                        });
-                    });
+                    attachAccordion();
                 }
             } catch (err) {
                 console.error('Ошибка загрузки:', err);
-                // Если база не ответила, оставляем старые статичные карточки
             }
         }
 
+        // --- ЛОГИКА АККОРДЕОНА ---
+        function attachAccordion() {
+            document.querySelectorAll('.card').forEach(card => {
+                // Удаляем старые обработчики (чтобы не было дублей)
+                card.replaceWith(card.cloneNode(true));
+            });
+
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    card.classList.toggle('active');
+                });
+            });
+        }
+
+        // --- ЛОГИКА ТЕМЫ ---
+        const toggleBtn = document.getElementById('themeToggle');
+        const htmlEl = document.documentElement;
+
+        if (toggleBtn) {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                htmlEl.setAttribute('data-theme', savedTheme);
+                toggleBtn.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+            } else {
+                htmlEl.setAttribute('data-theme', 'dark');
+                toggleBtn.textContent = '🌙';
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = htmlEl.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                htmlEl.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                toggleBtn.textContent = newTheme === 'light' ? '☀️' : '🌙';
+            });
+        }
+
+        // Запускаем загрузку
         loadPortfolio();
     </script>
 </body>
