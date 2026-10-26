@@ -245,12 +245,29 @@
                     });
 
                     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    const { data, error } = await db.functions.invoke('upload-to-github', {
-                        body: { path: `assets/images/${fileName}`, content_base64: base64, message: `portfolio: ${title}`, repo: 'angel-adel/portfolio' }
+                                        // Вызываем функцию через fetch с явными заголовками
+                    const response = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'apikey': SUPABASE_ANON_KEY // <--- ВОТ ЭТОТ ЗАГОЛОВОК БЫЛ ПРОПУЩЕН
+                        },
+                        body: JSON.stringify({
+                            path: `assets/images/${fileName}`,
+                            content_base64: base64,
+                            message: `portfolio: ${title}`,
+                            repo: 'angel-adel/portfolio'
+                        })
                     });
-                    if (error) throw new Error(error.message);
-                    if (data && data.error) throw new Error(data.error);
-                    imageUrl = data.url;
+
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Ошибка загрузки картинки');
+                    }
+                    
+                    imageUrl = result.url;
                 }
 
                 const projectData = {
