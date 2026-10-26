@@ -24,13 +24,11 @@
         .list-card { margin-top: 2rem; border-top: 2px dashed #eee; padding-top: 1rem; }
         small { color: #888; display: block; margin-top: 3px; font-size: 0.8rem; }
 
-        /* Стили для визуального превью */
         .editor-container { display: flex; gap: 1rem; flex-wrap: wrap; }
         .editor-box { flex: 1; min-width: 300px; }
         .preview-box { flex: 1; min-width: 300px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-top: 5px; }
         .preview-box h3 { margin-top: 0; font-size: 0.9rem; color: #666; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
         .preview-content { font-size: 0.95rem; }
-        .preview-content ul { padding-left: 20px; }
     </style>
 </head>
 <body>
@@ -56,33 +54,30 @@
             <input type="hidden" id="editId" value="">
             
             <label>Название проекта</label>
-            <input type="text" id="title" required placeholder="Например: Ушастик v5.0">
+            <input type="text" id="title" required>
             
             <label>Метка (тег)</label>
-            <input type="text" id="tag" placeholder="Например: Десктопное приложение · C#">
+            <input type="text" id="tag">
 
-            <!-- ДВА РЕДАКТОРА ДЛЯ ОПИСАНИЯ -->
-            <label>Описание (можно использовать HTML теги: &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;b&gt;)</label>
+            <label>Описание (HTML)</label>
             <div class="editor-container">
                 <div class="editor-box">
-                    <textarea id="description" required placeholder="<p>Основной текст о проекте...</p>&#10;<ul><li>Пункт 1</li><li>Пункт 2</li></ul>" style="height: 200px;"></textarea>
+                    <textarea id="description" required></textarea>
                 </div>
                 <div class="preview-box">
-                    <h3>Визуальное превью:</h3>
+                    <h3>Превью:</h3>
                     <div class="preview-content" id="descPreview">...</div>
                 </div>
             </div>
 
-            <label>Бейджи (фичи)</label>
+            <label>Бейджи (через запятую)</label>
             <input type="text" id="features" placeholder="🎨 Смена цветов, 🔍 Прозрачность">
-            <small>Через запятую</small>
 
-            <label>Список деталей (отдельно от описания)</label>
-            <textarea id="details" placeholder="Окно без рамок&#10;5 готовых цветов"></textarea>
-            <small>Каждый пункт с новой строки</small>
+            <label>Список деталей (с новой строки)</label>
+            <textarea id="details"></textarea>
 
             <label>Ссылка</label>
-            <input type="url" id="linkUrl" placeholder="https://github.com/...">
+            <input type="url" id="linkUrl">
 
             <label>Обложка / Скриншот</label>
             <input type="file" id="imageFile" accept="image/*">
@@ -108,24 +103,34 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let projectsData = [];
 
-        // Логика превью описания
         document.getElementById('description').addEventListener('input', (e) => {
             document.getElementById('descPreview').innerHTML = e.target.value;
         });
 
-        // Вход
         document.getElementById('loginBtn').onclick = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const msg = document.getElementById('loginMsg');
-            const { data, error } = await db.auth.signInWithPassword({ email, password });
-            if (error) { msg.textContent = '❌ ' + error.message; msg.className = 'msg error'; }
-            else { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
+            const { data, error } = await db.auth.signInWithPassword({ 
+                email: document.getElementById('email').value, 
+                password: document.getElementById('password').value 
+            });
+            if (error) { 
+                document.getElementById('loginMsg').textContent = '❌ ' + error.message; 
+                document.getElementById('loginMsg').className = 'msg error'; 
+            } else { 
+                document.getElementById('loginScreen').classList.add('hidden'); 
+                document.getElementById('adminScreen').classList.remove('hidden'); 
+                loadPortfolio(); 
+            }
         };
 
         db.auth.onAuthStateChange((event, session) => {
-            if (session) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
-            else { document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('adminScreen').classList.add('hidden'); }
+            if (session) { 
+                document.getElementById('loginScreen').classList.add('hidden'); 
+                document.getElementById('adminScreen').classList.remove('hidden'); 
+                loadPortfolio(); 
+            } else { 
+                document.getElementById('loginScreen').classList.remove('hidden'); 
+                document.getElementById('adminScreen').classList.add('hidden'); 
+            }
         });
 
         document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
@@ -153,30 +158,38 @@
             if (!data || data.length === 0) { container.innerHTML = 'Проектов пока нет.'; return; }
 
             projectsData = data;
-
             let html = '<table><thead><tr><th>Название</th><th>Действие</th></tr></thead><tbody>';
+            
             data.forEach(item => {
                 html += `<tr>
                             <td>${item.title}</td>
                             <td>
-                                <button class="btn-edit" onclick="editProject(${item.id})">✏️ Ред.</button>
-                                <button class="btn-danger" onclick="deleteProject(${item.id})">🗑️</button>
+                                <button class="btn-edit" data-id="${item.id}">✏️ Ред.</button>
+                                <button class="btn-danger" data-id="${item.id}">🗑️</button>
                             </td>
                          </tr>`;
             });
             html += '</tbody></table>';
             container.innerHTML = html;
+
+            // Навешиваем события на кнопки
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.onclick = () => editProject(parseInt(btn.dataset.id));
+            });
+            document.querySelectorAll('.btn-danger').forEach(btn => {
+                btn.onclick = () => deleteProject(parseInt(btn.dataset.id));
+            });
         }
 
-        window.deleteProject = async (id) => {
+        async function deleteProject(id) {
             if (!confirm('Удалить проект?')) return;
             const { error } = await db.from('portfolio').delete().eq('id', id);
             if (error) alert('❌ Ошибка: ' + error.message); else loadPortfolio();
-        };
+        }
 
-        window.editProject = (id) => {
+        function editProject(id) {
             const p = projectsData.find(item => item.id === id);
-            if (!p) return;
+            if (!p) return alert("Проект не найден");
 
             document.getElementById('formTitle').innerText = 'Редактировать проект';
             document.getElementById('editId').value = p.id;
@@ -188,18 +201,17 @@
             document.getElementById('details').value = (p.details || []).join('\n');
             document.getElementById('linkUrl').value = p.link_url || '';
             
-            const imgPreview = document.getElementById('imagePreview');
             if (p.image_url) {
-                imgPreview.src = p.image_url;
-                imgPreview.style.display = 'block';
+                document.getElementById('imagePreview').src = p.image_url;
+                document.getElementById('imagePreview').style.display = 'block';
             } else {
-                imgPreview.style.display = 'none';
+                document.getElementById('imagePreview').style.display = 'none';
             }
             
             document.getElementById('saveBtn').textContent = '💾 Обновить';
             document.getElementById('cancelBtn').classList.remove('hidden');
             document.getElementById('addForm').scrollIntoView({ behavior: 'smooth' });
-        };
+        }
 
         document.getElementById('cancelBtn').onclick = () => {
             document.getElementById('addForm').reset();
@@ -227,14 +239,15 @@
             const featuresRaw = document.getElementById('features').value.trim();
             const detailsRaw = document.getElementById('details').value.trim();
             const linkUrl = document.getElementById('linkUrl').value.trim();
-            const fileInput = document.getElementById('imageFile');
             
+            // Массивы
             const features = featuresRaw ? featuresRaw.split(',').map(f => f.trim()).filter(Boolean) : [];
             const details = detailsRaw ? detailsRaw.split('\n').map(d => d.trim()).filter(Boolean) : [];
 
             let imageUrl = null;
 
             try {
+                const fileInput = document.getElementById('imageFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     const base64 = await new Promise((resolve, reject) => {
@@ -245,13 +258,13 @@
                     });
 
                     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                                        // Вызываем функцию через fetch с явными заголовками
+                    
                     const response = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                            'apikey': SUPABASE_ANON_KEY // <--- ВОТ ЭТОТ ЗАГОЛОВОК БЫЛ ПРОПУЩЕН
+                            'apikey': SUPABASE_ANON_KEY
                         },
                         body: JSON.stringify({
                             path: `assets/images/${fileName}`,
@@ -262,17 +275,18 @@
                     });
 
                     const result = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(result.error || 'Ошибка загрузки картинки');
-                    }
-                    
+                    if (!response.ok) throw new Error(result.error || 'Ошибка загрузки картинки');
                     imageUrl = result.url;
                 }
 
                 const projectData = {
-                    title: title, tag: tag || null, description: description, features: features, details: details,
-                    link_url: linkUrl || null, published: true
+                    title: title, 
+                    tag: tag || null, 
+                    description: description, 
+                    features: features, 
+                    details: details,
+                    link_url: linkUrl || null, 
+                    published: true
                 };
                 if (imageUrl) projectData.image_url = imageUrl;
 
