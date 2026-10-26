@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка Портфолио — Ádel</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f5f2f0; margin: 0; padding: 1rem; color: #333; }
+        .card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .hidden { display: none !important; }
+        label { font-weight: 600; display: block; margin-top: 1rem; font-size: 0.9rem; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 120px; }
+        button { background: #7c3a8c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 1rem; font-weight: 600; transition: 0.2s; }
+        button:hover { background: #5a2a67; }
+        .btn-outline { background: transparent; color: #7c3a8c; border: 2px solid #7c3a8c; }
+        .btn-outline:hover { background: #7c3a8c; color: white; }
+        .btn-danger { background: #dc3545; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
+        .btn-danger:hover { background: #bd2130; }
+        .msg { padding: 10px; border-radius: 8px; margin-top: 1rem; display: none; }
+        .msg.error { background: #ffe0e0; color: #a00; display: block; }
+        .msg.ok { background: #e0f5e0; color: #070; display: block; }
+        .preview-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 10px 5px; border-bottom: 1px solid #eee; }
+        th { color: #666; font-weight: 600; }
+        .list-card { margin-top: 2rem; border-top: 2px dashed #eee; padding-top: 1rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ЭКРАН ВХОДА -->
+    <div class="card" id="loginScreen">
+        <h2>🔐 Вход в админку портфолио</h2>
+        <label>Email</label>
+        <input type="email" id="email" placeholder="angel.adel2026@yandex.ru">
+        <label>Пароль</label>
+        <input type="password" id="password" placeholder="********">
+        <button id="loginBtn">Войти</button>
+        <div id="loginMsg" class="msg"></div>
+    </div>
+
+    <!-- ЭКРАН АДМИНКИ -->
+    <div class="card hidden" id="adminScreen">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>💼 Управление портфолио</h2>
+            <button class="btn-outline" id="logoutBtn" style="margin-top: 0;">Выйти</button>
+        </div>
+
+        <form id="addForm">
+            <h3>Добавить проект</h3>
+            
+            <label>Название проекта</label>
+            <input type="text" id="title" required placeholder="Например: Ушастик v5.0">
+            
+            <label>Описание</label>
+            <textarea id="description" required placeholder="Кратко о том, что это за проект..."></textarea>
+
+            <label>Ссылка (GitHub, демо или скачивание)</label>
+            <input type="url" id="linkUrl" placeholder="https://github.com/...">
+
+            <label>Обложка проекта (картинка)</label>
+            <input type="file" id="imageFile" accept="image/*">
+            <img id="imagePreview" class="preview-img">
+
+            <button type="submit" id="saveBtn">💾 Опубликовать</button>
+            <div id="adminMsg" class="msg"></div>
+        </form>
+
+        <div class="list-card">
+            <h3>📋 Ваши проекты</h3>
+            <div id="recentList">Загрузка...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ⚠️ ВСТАВЬ СВОЙ ANON КЛЮЧ
+        const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
+        
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- ВХОД ---
+        document.getElementById('loginBtn').onclick = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const msg = document.getElementById('loginMsg');
+            
+            msg.className = 'msg'; msg.style.display = 'none';
+
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                msg.textContent = '❌ ' + error.message;
+                msg.className = 'msg error';
+            } else {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminScreen').classList.remove('hidden');
+                loadPortfolio();
+            }
+        };
+
+        db.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminScreen').classList.remove('hidden');
+                loadPortfolio();
+            } else {
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('adminScreen').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
+
+        // --- ПРЕВЬЮ КАРТИНКИ ---
+        document.getElementById('imageFile').onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('imagePreview');
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // --- СПИСОК ПРОЕКТОВ ---
+        async function loadPortfolio() {
+            const container = document.getElementById('recentList');
+            container.innerHTML = 'Загрузка...';
+            
+            const { data, error } = await db
+                .from('portfolio')
+                .select('id, title, link_url')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = '❌ Ошибка: ' + error.message;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = 'Проектов пока нет. Добавьте первый!';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Название</th><th>Ссылка</th><th>Действие</th></tr></thead><tbody>';
+            data.forEach(item => {
+                html += `<tr>
+                            <td>${item.title}</td>
+                            <td>${item.link_url ? `<a href="${item.link_url}" target="_blank">Открыть</a>` : '—'}</td>
+                            <td><button class="btn-danger" onclick="deleteProject(${item.id})">🗑️</button></td>
+                         </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // --- УДАЛЕНИЕ ---
+        window.deleteProject = async (id) => {
+            if (!confirm('Удалить этот проект?')) return;
+            
+            const { error } = await db.from('portfolio').delete().eq('id', id);
+            if (error) {
+                alert('❌ Ошибка: ' + error.message);
+            } else {
+                loadPortfolio();
+            }
+        };
+
+        // --- СОХРАНЕНИЕ ---
+        document.getElementById('addForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            const msg = document.getElementById('adminMsg');
+            
+            btn.disabled = true;
+            btn.textContent = 'Сохранение...';
+            msg.className = 'msg'; msg.style.display = 'none';
+
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const linkUrl = document.getElementById('linkUrl').value.trim();
+            const fileInput = document.getElementById('imageFile');
+            
+            let imageUrl = null;
+
+            try {
+                // Загрузка картинки (в папку portfolio-assets)
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const base64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+
+                    const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    
+                    const { data, error } = await db.functions.invoke('upload-to-github', {
+                        body: {
+                            path: `portfolio-assets/${fileName}`, // Отдельная папка
+                            content_base64: base64,
+                            message: `portfolio image: ${title}`
+                        }
+                    });
+
+                    if (error) throw new Error("Ошибка загрузки картинки: " + error.message);
+                    if (data && data.error) throw new Error("Ошибка GitHub: " + data.error);
+                    
+                    imageUrl = data.url;
+                }
+
+                // Сохранение в базу
+                const { error: dbError } = await db.from('portfolio').insert({
+                    title: title,
+                    description: description,
+                    link_url: linkUrl || null,
+                    image_url: imageUrl,
+                    published: true
+                });
+
+                if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+
+                msg.textContent = '✅ Проект опубликован!';
+                msg.className = 'msg ok';
+                
+                document.getElementById('addForm').reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                loadPortfolio();
+
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message;
+                msg.className = 'msg error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 Опубликовать';
+            }
+        };
+    </script>
+</body>
+</html>
