@@ -643,6 +643,9 @@
 
         <!-- В самом низу, перед </body> -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <!-- Подключаем библиотеку Supabase (если её нет в head) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         // ⚠️ ВСТАВЬ СВОЙ ANON КЛЮЧ
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
@@ -652,94 +655,91 @@
         async function loadPortfolio() {
             const grid = document.querySelector('.projects-grid');
             
-            const { data: projects, error } = await db
-                .from('portfolio')
-                .select('*')
-                .eq('published', true)
-                .order('created_at', { ascending: false });
+            try {
+                const { data: projects, error } = await db
+                    .from('portfolio')
+                    .select('*')
+                    .eq('published', true)
+                    .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error('Ошибка загрузки портфолио:', error);
-                return;
+                if (error) throw error;
+
+                // Если в базе есть проекты — полностью заменяем содержимое сетки
+                if (projects && projects.length > 0) {
+                    grid.innerHTML = '';
+
+                    projects.forEach((p, index) => {
+                        // Бейджи
+                        let badgesHtml = '';
+                        if (p.features && p.features.length > 0) {
+                            badgesHtml = '<div style="margin-bottom: 1.2rem;">';
+                            p.features.forEach(f => {
+                                badgesHtml += `<span class="feature-badge">${f}</span>`;
+                            });
+                            badgesHtml += '</div>';
+                        }
+
+                        // Картинка
+                        let imageHtml = '';
+                        if (p.image_url) {
+                            imageHtml = `
+                                <div class="screenshots" style="grid-template-columns: 1fr;">
+                                    <a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt="${p.title}"></a>
+                                </div>
+                            `;
+                        }
+
+                        // Список
+                        let listHtml = '';
+                        if (p.details && p.details.length > 0) {
+                            listHtml = '<ul>';
+                            p.details.forEach(d => {
+                                listHtml += `<li>${d}</li>`;
+                            });
+                            listHtml += '</ul>';
+                        }
+
+                        // Кнопка
+                        let buttonHtml = '';
+                        if (p.link_url) {
+                            buttonHtml = `
+                                <div class="btn-group">
+                                    <a href="${p.link_url}" target="_blank" rel="noopener" class="btn btn-primary">🌐 Открыть проект</a>
+                                </div>
+                            `;
+                        }
+
+                        const card = document.createElement('article');
+                        card.className = 'card';
+                        card.style.animationDelay = `${index * 0.1}s`;
+                        
+                        card.innerHTML = `
+                            <div class="tag">${p.tag || 'Проект'}</div>
+                            <h2>${p.title}</h2>
+                            <div class="card-content">
+                                <p>${p.description}</p>
+                                ${badgesHtml}
+                                ${imageHtml}
+                                ${listHtml}
+                                ${buttonHtml}
+                            </div>
+                        `;
+
+                        grid.appendChild(card);
+                    });
+
+                    // Перепривязываем аккордеон
+                    document.querySelectorAll('.card').forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            if (e.target.closest('a')) return;
+                            card.classList.toggle('active');
+                        });
+                    });
+                }
+            } catch (err) {
+                console.error('Ошибка загрузки:', err);
+                // Если база не ответила, оставляем старые статичные карточки
             }
-
-            if (!projects || projects.length === 0) return;
-
-            // Очищаем старые карточки
-            grid.innerHTML = '';
-
-            projects.forEach((p, index) => {
-                // 1. Бейджи (фичи)
-                let badgesHtml = '';
-                if (p.features && p.features.length > 0) {
-                    badgesHtml = '<div style="margin-bottom: 1.2rem;">';
-                    p.features.forEach(f => {
-                        badgesHtml += `<span class="feature-badge">${f}</span>`;
-                    });
-                    badgesHtml += '</div>';
-                }
-
-                // 2. Картинка
-                let imageHtml = '';
-                if (p.image_url) {
-                    imageHtml = `
-                        <div class="screenshots" style="grid-template-columns: 1fr;">
-                            <a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt="${p.title}"></a>
-                        </div>
-                    `;
-                }
-
-                // 3. Список деталей
-                let listHtml = '';
-                if (p.details && p.details.length > 0) {
-                    listHtml = '<ul>';
-                    p.details.forEach(d => {
-                        listHtml += `<li>${d}</li>`;
-                    });
-                    listHtml += '</ul>';
-                }
-
-                // 4. Кнопка
-                let buttonHtml = '';
-                if (p.link_url) {
-                    buttonHtml = `
-                        <div class="btn-group">
-                            <a href="${p.link_url}" target="_blank" rel="noopener" class="btn btn-primary">🌐 Открыть проект</a>
-                        </div>
-                    `;
-                }
-
-                // Собираем карточку
-                const card = document.createElement('article');
-                card.className = 'card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                
-                card.innerHTML = `
-                    <div class="tag">${p.tag || 'Проект'}</div>
-                    <h2>${p.title}</h2>
-                    <div class="card-content">
-                        <p>${p.description}</p>
-                        ${badgesHtml}
-                        ${imageHtml}
-                        ${listHtml}
-                        ${buttonHtml}
-                    </div>
-                `;
-
-                grid.appendChild(card);
-            });
-
-            // Перепривязываем аккордеон
-            attachAccordion();
-        }
-
-        function attachAccordion() {
-            document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('a')) return;
-                    card.classList.toggle('active');
-                });
-            });
         }
 
         loadPortfolio();
