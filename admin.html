@@ -10,7 +10,7 @@
         .hidden { display: none !important; }
         label { font-weight: 600; display: block; margin-top: 1rem; font-size: 0.9rem; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 120px; }
+        textarea { resize: vertical; min-height: 80px; }
         button { background: #7c3a8c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 1rem; font-weight: 600; transition: 0.2s; }
         button:hover { background: #5a2a67; }
         .btn-outline { background: transparent; color: #7c3a8c; border: 2px solid #7c3a8c; }
@@ -25,11 +25,11 @@
         th, td { text-align: left; padding: 10px 5px; border-bottom: 1px solid #eee; }
         th { color: #666; font-weight: 600; }
         .list-card { margin-top: 2rem; border-top: 2px dashed #eee; padding-top: 1rem; }
+        small { color: #888; display: block; margin-top: 3px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН ВХОДА -->
     <div class="card" id="loginScreen">
         <h2>🔐 Вход в админку портфолио</h2>
         <label>Email</label>
@@ -40,7 +40,6 @@
         <div id="loginMsg" class="msg"></div>
     </div>
 
-    <!-- ЭКРАН АДМИНКИ -->
     <div class="card hidden" id="adminScreen">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2>💼 Управление портфолио</h2>
@@ -53,13 +52,25 @@
             <label>Название проекта</label>
             <input type="text" id="title" required placeholder="Например: Ушастик v5.0">
             
-            <label>Описание</label>
-            <textarea id="description" required placeholder="Кратко о том, что это за проект..."></textarea>
+            <label>Метка (тег)</label>
+            <input type="text" id="tag" placeholder="Например: Десктопное приложение · C#">
+            <small>Пишется над заголовком</small>
+
+            <label>Краткое описание</label>
+            <textarea id="description" required placeholder="Основной текст о проекте..."></textarea>
+
+            <label>Бейджи (фичи)</label>
+            <input type="text" id="features" placeholder="🎨 Смена цветов, 🔍 Прозрачность, 📌 Поверх окон">
+            <small>Через запятую. Появятся как цветные плашки</small>
+
+            <label>Список деталей</label>
+            <textarea id="details" placeholder="Окно без рамок&#10;5 готовых цветов&#10;Сохранение в .txt"></textarea>
+            <small>Каждый пункт с новой строки. Появятся с точечками</small>
 
             <label>Ссылка (GitHub, демо или скачивание)</label>
             <input type="url" id="linkUrl" placeholder="https://github.com/...">
 
-            <label>Обложка проекта (картинка)</label>
+            <label>Обложка / Скриншот</label>
             <input type="file" id="imageFile" accept="image/*">
             <img id="imagePreview" class="preview-img">
 
@@ -75,13 +86,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ⚠️ ВСТАВЬ СВОЙ ANON КЛЮЧ
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
         
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- ВХОД ---
         document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -114,7 +123,6 @@
 
         document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
 
-        // --- ПРЕВЬЮ КАРТИНКИ ---
         document.getElementById('imageFile').onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -128,7 +136,6 @@
             }
         };
 
-        // --- СПИСОК ПРОЕКТОВ ---
         async function loadPortfolio() {
             const container = document.getElementById('recentList');
             container.innerHTML = 'Загрузка...';
@@ -160,7 +167,6 @@
             container.innerHTML = html;
         }
 
-        // --- УДАЛЕНИЕ ---
         window.deleteProject = async (id) => {
             if (!confirm('Удалить этот проект?')) return;
             
@@ -172,7 +178,6 @@
             }
         };
 
-        // --- СОХРАНЕНИЕ ---
         document.getElementById('addForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
@@ -183,14 +188,22 @@
             msg.className = 'msg'; msg.style.display = 'none';
 
             const title = document.getElementById('title').value.trim();
+            const tag = document.getElementById('tag').value.trim();
             const description = document.getElementById('description').value.trim();
+            const featuresRaw = document.getElementById('features').value.trim();
+            const detailsRaw = document.getElementById('details').value.trim();
             const linkUrl = document.getElementById('linkUrl').value.trim();
             const fileInput = document.getElementById('imageFile');
             
+            // Разбиваем бейджи через запятую
+            const features = featuresRaw ? featuresRaw.split(',').map(f => f.trim()).filter(Boolean) : [];
+            
+            // Разбиваем список по переносам строк
+            const details = detailsRaw ? detailsRaw.split('\n').map(d => d.trim()).filter(Boolean) : [];
+
             let imageUrl = null;
 
             try {
-                // Загрузка картинки (в папку portfolio-assets)
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     const base64 = await new Promise((resolve, reject) => {
@@ -204,9 +217,10 @@
                     
                     const { data, error } = await db.functions.invoke('upload-to-github', {
                         body: {
-                            path: `portfolio-assets/${fileName}`, // Отдельная папка
+                            path: `assets/images/${fileName}`,
                             content_base64: base64,
-                            message: `portfolio image: ${title}`
+                            message: `portfolio image: ${title}`,
+                            repo: 'angel-adel/portfolio' // Указываем репозиторий портфолио
                         }
                     });
 
@@ -216,10 +230,12 @@
                     imageUrl = data.url;
                 }
 
-                // Сохранение в базу
                 const { error: dbError } = await db.from('portfolio').insert({
                     title: title,
+                    tag: tag || null,
                     description: description,
+                    features: features,
+                    details: details,
                     link_url: linkUrl || null,
                     image_url: imageUrl,
                     published: true
