@@ -641,45 +641,108 @@
     <!-- Кнопка переключения темы -->
     <div class="theme-toggle" id="themeToggle" title="Сменить тему">🌙</div>
 
+        <!-- В самом низу, перед </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Логика аккордеона
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Если кликнули по ссылке внутри карточки, не сворачиваем её
-                if (e.target.closest('a')) return;
+        // ⚠️ ВСТАВЬ СВОЙ ANON КЛЮЧ
+        const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadPortfolio() {
+            const grid = document.querySelector('.projects-grid');
+            
+            const { data: projects, error } = await db
+                .from('portfolio')
+                .select('*')
+                .eq('published', true)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Ошибка загрузки портфолио:', error);
+                return;
+            }
+
+            if (!projects || projects.length === 0) return;
+
+            // Очищаем старые карточки
+            grid.innerHTML = '';
+
+            projects.forEach((p, index) => {
+                // 1. Бейджи (фичи)
+                let badgesHtml = '';
+                if (p.features && p.features.length > 0) {
+                    badgesHtml = '<div style="margin-bottom: 1.2rem;">';
+                    p.features.forEach(f => {
+                        badgesHtml += `<span class="feature-badge">${f}</span>`;
+                    });
+                    badgesHtml += '</div>';
+                }
+
+                // 2. Картинка
+                let imageHtml = '';
+                if (p.image_url) {
+                    imageHtml = `
+                        <div class="screenshots" style="grid-template-columns: 1fr;">
+                            <a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt="${p.title}"></a>
+                        </div>
+                    `;
+                }
+
+                // 3. Список деталей
+                let listHtml = '';
+                if (p.details && p.details.length > 0) {
+                    listHtml = '<ul>';
+                    p.details.forEach(d => {
+                        listHtml += `<li>${d}</li>`;
+                    });
+                    listHtml += '</ul>';
+                }
+
+                // 4. Кнопка
+                let buttonHtml = '';
+                if (p.link_url) {
+                    buttonHtml = `
+                        <div class="btn-group">
+                            <a href="${p.link_url}" target="_blank" rel="noopener" class="btn btn-primary">🌐 Открыть проект</a>
+                        </div>
+                    `;
+                }
+
+                // Собираем карточку
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
                 
-                // Закрываем остальные карточки (опционально, можно убрать для мультиоткрытия)
-                /*
-                document.querySelectorAll('.card').forEach(c => {
-                    if (c !== card) c.classList.remove('active');
-                });
-                */
-                
-                card.classList.toggle('active');
+                card.innerHTML = `
+                    <div class="tag">${p.tag || 'Проект'}</div>
+                    <h2>${p.title}</h2>
+                    <div class="card-content">
+                        <p>${p.description}</p>
+                        ${badgesHtml}
+                        ${imageHtml}
+                        ${listHtml}
+                        ${buttonHtml}
+                    </div>
+                `;
+
+                grid.appendChild(card);
             });
-        });
 
-        // Логика смены темы
-        const toggleBtn = document.getElementById('themeToggle');
-        const htmlEl = document.documentElement;
-
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            htmlEl.setAttribute('data-theme', savedTheme);
-            toggleBtn.textContent = savedTheme === 'light' ? '☀️' : '🌙';
-        } else {
-            htmlEl.setAttribute('data-theme', 'dark');
-            toggleBtn.textContent = '🌙';
+            // Перепривязываем аккордеон
+            attachAccordion();
         }
 
-        toggleBtn.addEventListener('click', () => {
-            const currentTheme = htmlEl.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            htmlEl.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            toggleBtn.textContent = newTheme === 'light' ? '☀️' : '🌙';
-        });
+        function attachAccordion() {
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    card.classList.toggle('active');
+                });
+            });
+        }
+
+        loadPortfolio();
     </script>
 </body>
 </html>
