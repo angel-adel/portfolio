@@ -2,38 +2,39 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админка Портфолио — Ádel</title>
     <style>
-        /* ... (Оставь свои стили без изменений) ... */
         body { font-family: system-ui, sans-serif; background: #f5f2f0; margin: 0; padding: 1rem; color: #333; }
-        .card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
         label { font-weight: 600; display: block; margin-top: 1rem; font-size: 0.9rem; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 80px; }
+        textarea { resize: vertical; min-height: 100px; }
         button { background: #7c3a8c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 1rem; font-weight: 600; transition: 0.2s; }
         button:hover { background: #5a2a67; }
         .btn-outline { background: transparent; color: #7c3a8c; border: 2px solid #7c3a8c; }
         .btn-outline:hover { background: #7c3a8c; color: white; }
         .btn-danger { background: #dc3545; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
-        .btn-danger:hover { background: #bd2130; }
         .btn-edit { background: #0d6efd; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
-        .btn-edit:hover { background: #0b5ed7; }
         .msg { padding: 10px; border-radius: 8px; margin-top: 1rem; display: none; }
         .msg.error { background: #ffe0e0; color: #a00; display: block; }
         .msg.ok { background: #e0f5e0; color: #070; display: block; }
-        .preview-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
         th, td { text-align: left; padding: 10px 5px; border-bottom: 1px solid #eee; }
-        th { color: #666; font-weight: 600; }
         .list-card { margin-top: 2rem; border-top: 2px dashed #eee; padding-top: 1rem; }
         small { color: #888; display: block; margin-top: 3px; font-size: 0.8rem; }
+
+        /* Стили для визуального превью */
+        .editor-container { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .editor-box { flex: 1; min-width: 300px; }
+        .preview-box { flex: 1; min-width: 300px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin-top: 5px; }
+        .preview-box h3 { margin-top: 0; font-size: 0.9rem; color: #666; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .preview-content { font-size: 0.95rem; }
+        .preview-content ul { padding-left: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- ... (Экран входа и админки оставь как было) ... -->
     <div class="card" id="loginScreen">
         <h2>🔐 Вход в админку портфолио</h2>
         <label>Email</label>
@@ -52,7 +53,7 @@
 
         <form id="addForm">
             <h3 id="formTitle">Добавить проект</h3>
-            <input type="hidden" id="editId" value=""> <!-- Скрытое поле для ID при редактировании -->
+            <input type="hidden" id="editId" value="">
             
             <label>Название проекта</label>
             <input type="text" id="title" required placeholder="Например: Ушастик v5.0">
@@ -60,26 +61,37 @@
             <label>Метка (тег)</label>
             <input type="text" id="tag" placeholder="Например: Десктопное приложение · C#">
 
-            <label>Краткое описание</label>
-            <textarea id="description" required placeholder="Основной текст о проекте..."></textarea>
+            <!-- ДВА РЕДАКТОРА ДЛЯ ОПИСАНИЯ -->
+            <label>Описание (можно использовать HTML теги: &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;b&gt;)</label>
+            <div class="editor-container">
+                <div class="editor-box">
+                    <textarea id="description" required placeholder="<p>Основной текст о проекте...</p>&#10;<ul><li>Пункт 1</li><li>Пункт 2</li></ul>" style="height: 200px;"></textarea>
+                </div>
+                <div class="preview-box">
+                    <h3>Визуальное превью:</h3>
+                    <div class="preview-content" id="descPreview">...</div>
+                </div>
+            </div>
 
             <label>Бейджи (фичи)</label>
             <input type="text" id="features" placeholder="🎨 Смена цветов, 🔍 Прозрачность">
             <small>Через запятую</small>
 
-            <label>Список деталей</label>
+            <label>Список деталей (отдельно от описания)</label>
             <textarea id="details" placeholder="Окно без рамок&#10;5 готовых цветов"></textarea>
             <small>Каждый пункт с новой строки</small>
 
-            <label>Ссылка (GitHub, демо или скачивание)</label>
+            <label>Ссылка</label>
             <input type="url" id="linkUrl" placeholder="https://github.com/...">
 
             <label>Обложка / Скриншот</label>
             <input type="file" id="imageFile" accept="image/*">
-            <img id="imagePreview" class="preview-img">
+            <img id="imagePreview" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none;">
 
-            <button type="submit" id="saveBtn">💾 Опубликовать</button>
-            <button type="button" id="cancelBtn" class="btn-outline hidden" style="margin-left: 10px;">Отмена</button>
+            <div style="margin-top: 1rem;">
+                <button type="submit" id="saveBtn">💾 Опубликовать</button>
+                <button type="button" id="cancelBtn" class="btn-outline hidden" style="margin-left: 10px;">Отмена</button>
+            </div>
             <div id="adminMsg" class="msg"></div>
         </form>
 
@@ -94,23 +106,28 @@
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let projectsData = []; // Храним загруженные проекты для редактирования
+        let projectsData = [];
 
-        // ... (Логика входа и выхода оставь без изменений) ...
+        // Логика превью описания
+        document.getElementById('description').addEventListener('input', (e) => {
+            document.getElementById('descPreview').innerHTML = e.target.value;
+        });
+
+        // Вход
         document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const msg = document.getElementById('loginMsg');
-            msg.className = 'msg'; msg.style.display = 'none';
             const { data, error } = await db.auth.signInWithPassword({ email, password });
             if (error) { msg.textContent = '❌ ' + error.message; msg.className = 'msg error'; }
             else { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
         };
+
         db.auth.onAuthStateChange((event, session) => {
             if (session) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
             else { document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('adminScreen').classList.add('hidden'); }
         });
+
         document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
 
         document.getElementById('imageFile').onchange = (e) => {
@@ -133,9 +150,9 @@
             const { data, error } = await db.from('portfolio').select('*').order('created_at', { ascending: false });
 
             if (error) { container.innerHTML = '❌ Ошибка: ' + error.message; return; }
-            if (!data || data.length === 0) { container.innerHTML = 'Проектов пока нет. Добавьте первый!'; return; }
+            if (!data || data.length === 0) { container.innerHTML = 'Проектов пока нет.'; return; }
 
-            projectsData = data; // Сохраняем для редактирования
+            projectsData = data;
 
             let html = '<table><thead><tr><th>Название</th><th>Действие</th></tr></thead><tbody>';
             data.forEach(item => {
@@ -152,12 +169,11 @@
         }
 
         window.deleteProject = async (id) => {
-            if (!confirm('Удалить этот проект?')) return;
+            if (!confirm('Удалить проект?')) return;
             const { error } = await db.from('portfolio').delete().eq('id', id);
             if (error) alert('❌ Ошибка: ' + error.message); else loadPortfolio();
         };
 
-        // --- РЕДАКТИРОВАНИЕ ---
         window.editProject = (id) => {
             const p = projectsData.find(item => item.id === id);
             if (!p) return;
@@ -167,11 +183,11 @@
             document.getElementById('title').value = p.title || '';
             document.getElementById('tag').value = p.tag || '';
             document.getElementById('description').value = p.description || '';
+            document.getElementById('descPreview').innerHTML = p.description || '';
             document.getElementById('features').value = (p.features || []).join(', ');
             document.getElementById('details').value = (p.details || []).join('\n');
             document.getElementById('linkUrl').value = p.link_url || '';
             
-            // Показываем текущую картинку, если есть
             const imgPreview = document.getElementById('imagePreview');
             if (p.image_url) {
                 imgPreview.src = p.image_url;
@@ -180,16 +196,14 @@
                 imgPreview.style.display = 'none';
             }
             
-            // Меняем кнопки
             document.getElementById('saveBtn').textContent = '💾 Обновить';
             document.getElementById('cancelBtn').classList.remove('hidden');
-            
-            // Скроллим вверх к форме
             document.getElementById('addForm').scrollIntoView({ behavior: 'smooth' });
         };
 
         document.getElementById('cancelBtn').onclick = () => {
             document.getElementById('addForm').reset();
+            document.getElementById('descPreview').innerHTML = '...';
             document.getElementById('editId').value = '';
             document.getElementById('formTitle').innerText = 'Добавить проект';
             document.getElementById('saveBtn').textContent = '💾 Опубликовать';
@@ -197,7 +211,6 @@
             document.getElementById('imagePreview').style.display = 'none';
         };
 
-        // --- СОХРАНЕНИЕ (ИЛИ ОБНОВЛЕНИЕ) ---
         document.getElementById('addForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
@@ -244,26 +257,21 @@
                     title: title, tag: tag || null, description: description, features: features, details: details,
                     link_url: linkUrl || null, published: true
                 };
-                
-                // Если загрузили новую картинку, прикрепляем её
                 if (imageUrl) projectData.image_url = imageUrl;
 
                 if (editId) {
-                    // ОБНОВЛЕНИЕ
                     const { error: dbError } = await db.from('portfolio').update(projectData).eq('id', editId);
-                    if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+                    if (dbError) throw new Error(dbError.message);
                     msg.textContent = '✅ Проект обновлен!';
                 } else {
-                    // СОЗДАНИЕ НОВОГО
                     const { error: dbError } = await db.from('portfolio').insert(projectData);
-                    if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+                    if (dbError) throw new Error(dbError.message);
                     msg.textContent = '✅ Проект опубликован!';
                 }
 
                 msg.className = 'msg ok';
-                
-                // Сброс формы
                 document.getElementById('addForm').reset();
+                document.getElementById('descPreview').innerHTML = '...';
                 document.getElementById('editId').value = '';
                 document.getElementById('imagePreview').style.display = 'none';
                 document.getElementById('formTitle').innerText = 'Добавить проект';
