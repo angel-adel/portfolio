@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админка Портфолио — Ádel</title>
     <style>
+        /* ... (Оставь свои стили без изменений) ... */
         body { font-family: system-ui, sans-serif; background: #f5f2f0; margin: 0; padding: 1rem; color: #333; }
         .card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
@@ -17,6 +18,8 @@
         .btn-outline:hover { background: #7c3a8c; color: white; }
         .btn-danger { background: #dc3545; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
         .btn-danger:hover { background: #bd2130; }
+        .btn-edit { background: #0d6efd; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
+        .btn-edit:hover { background: #0b5ed7; }
         .msg { padding: 10px; border-radius: 8px; margin-top: 1rem; display: none; }
         .msg.error { background: #ffe0e0; color: #a00; display: block; }
         .msg.ok { background: #e0f5e0; color: #070; display: block; }
@@ -30,6 +33,7 @@
 </head>
 <body>
 
+    <!-- ... (Экран входа и админки оставь как было) ... -->
     <div class="card" id="loginScreen">
         <h2>🔐 Вход в админку портфолио</h2>
         <label>Email</label>
@@ -47,26 +51,25 @@
         </div>
 
         <form id="addForm">
-            <h3>Добавить проект</h3>
+            <h3 id="formTitle">Добавить проект</h3>
+            <input type="hidden" id="editId" value=""> <!-- Скрытое поле для ID при редактировании -->
             
             <label>Название проекта</label>
             <input type="text" id="title" required placeholder="Например: Ушастик v5.0">
             
             <label>Метка (тег)</label>
             <input type="text" id="tag" placeholder="Например: Десктопное приложение · C#">
-            <small>Пишется над заголовком</small>
 
             <label>Краткое описание</label>
             <textarea id="description" required placeholder="Основной текст о проекте..."></textarea>
 
-            <!-- ДОБАВЛЕНО ПОЛЕ ДЛЯ БЕЙДЖЕЙ -->
             <label>Бейджи (фичи)</label>
-            <input type="text" id="features" placeholder="🎨 Смена цветов, 🔍 Прозрачность, 📌 Поверх окон">
-            <small>Через запятую. Появятся как цветные плашки</small>
+            <input type="text" id="features" placeholder="🎨 Смена цветов, 🔍 Прозрачность">
+            <small>Через запятую</small>
 
             <label>Список деталей</label>
-            <textarea id="details" placeholder="Окно без рамок&#10;5 готовых цветов&#10;Сохранение в .txt"></textarea>
-            <small>Каждый пункт с новой строки. Появятся с точечками</small>
+            <textarea id="details" placeholder="Окно без рамок&#10;5 готовых цветов"></textarea>
+            <small>Каждый пункт с новой строки</small>
 
             <label>Ссылка (GitHub, демо или скачивание)</label>
             <input type="url" id="linkUrl" placeholder="https://github.com/...">
@@ -76,6 +79,7 @@
             <img id="imagePreview" class="preview-img">
 
             <button type="submit" id="saveBtn">💾 Опубликовать</button>
+            <button type="button" id="cancelBtn" class="btn-outline hidden" style="margin-left: 10px;">Отмена</button>
             <div id="adminMsg" class="msg"></div>
         </form>
 
@@ -89,39 +93,24 @@
     <script>
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
-        
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let projectsData = []; // Храним загруженные проекты для редактирования
 
+        // ... (Логика входа и выхода оставь без изменений) ...
         document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const msg = document.getElementById('loginMsg');
-            
             msg.className = 'msg'; msg.style.display = 'none';
-
             const { data, error } = await db.auth.signInWithPassword({ email, password });
-
-            if (error) {
-                msg.textContent = '❌ ' + error.message;
-                msg.className = 'msg error';
-            } else {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('adminScreen').classList.remove('hidden');
-                loadPortfolio();
-            }
+            if (error) { msg.textContent = '❌ ' + error.message; msg.className = 'msg error'; }
+            else { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
         };
-
         db.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('adminScreen').classList.remove('hidden');
-                loadPortfolio();
-            } else {
-                document.getElementById('loginScreen').classList.remove('hidden');
-                document.getElementById('adminScreen').classList.add('hidden');
-            }
+            if (session) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); loadPortfolio(); }
+            else { document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('adminScreen').classList.add('hidden'); }
         });
-
         document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
 
         document.getElementById('imageFile').onchange = (e) => {
@@ -141,27 +130,21 @@
             const container = document.getElementById('recentList');
             container.innerHTML = 'Загрузка...';
             
-            const { data, error } = await db
-                .from('portfolio')
-                .select('id, title, link_url')
-                .order('created_at', { ascending: false });
+            const { data, error } = await db.from('portfolio').select('*').order('created_at', { ascending: false });
 
-            if (error) {
-                container.innerHTML = '❌ Ошибка: ' + error.message;
-                return;
-            }
+            if (error) { container.innerHTML = '❌ Ошибка: ' + error.message; return; }
+            if (!data || data.length === 0) { container.innerHTML = 'Проектов пока нет. Добавьте первый!'; return; }
 
-            if (!data || data.length === 0) {
-                container.innerHTML = 'Проектов пока нет. Добавьте первый!';
-                return;
-            }
+            projectsData = data; // Сохраняем для редактирования
 
-            let html = '<table><thead><tr><th>Название</th><th>Ссылка</th><th>Действие</th></tr></thead><tbody>';
+            let html = '<table><thead><tr><th>Название</th><th>Действие</th></tr></thead><tbody>';
             data.forEach(item => {
                 html += `<tr>
                             <td>${item.title}</td>
-                            <td>${item.link_url ? `<a href="${item.link_url}" target="_blank">Открыть</a>` : '—'}</td>
-                            <td><button class="btn-danger" onclick="deleteProject(${item.id})">🗑️</button></td>
+                            <td>
+                                <button class="btn-edit" onclick="editProject(${item.id})">✏️ Ред.</button>
+                                <button class="btn-danger" onclick="deleteProject(${item.id})">🗑️</button>
+                            </td>
                          </tr>`;
             });
             html += '</tbody></table>';
@@ -170,19 +153,56 @@
 
         window.deleteProject = async (id) => {
             if (!confirm('Удалить этот проект?')) return;
-            
             const { error } = await db.from('portfolio').delete().eq('id', id);
-            if (error) {
-                alert('❌ Ошибка: ' + error.message);
-            } else {
-                loadPortfolio();
-            }
+            if (error) alert('❌ Ошибка: ' + error.message); else loadPortfolio();
         };
 
+        // --- РЕДАКТИРОВАНИЕ ---
+        window.editProject = (id) => {
+            const p = projectsData.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('formTitle').innerText = 'Редактировать проект';
+            document.getElementById('editId').value = p.id;
+            document.getElementById('title').value = p.title || '';
+            document.getElementById('tag').value = p.tag || '';
+            document.getElementById('description').value = p.description || '';
+            document.getElementById('features').value = (p.features || []).join(', ');
+            document.getElementById('details').value = (p.details || []).join('\n');
+            document.getElementById('linkUrl').value = p.link_url || '';
+            
+            // Показываем текущую картинку, если есть
+            const imgPreview = document.getElementById('imagePreview');
+            if (p.image_url) {
+                imgPreview.src = p.image_url;
+                imgPreview.style.display = 'block';
+            } else {
+                imgPreview.style.display = 'none';
+            }
+            
+            // Меняем кнопки
+            document.getElementById('saveBtn').textContent = '💾 Обновить';
+            document.getElementById('cancelBtn').classList.remove('hidden');
+            
+            // Скроллим вверх к форме
+            document.getElementById('addForm').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        document.getElementById('cancelBtn').onclick = () => {
+            document.getElementById('addForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('formTitle').innerText = 'Добавить проект';
+            document.getElementById('saveBtn').textContent = '💾 Опубликовать';
+            document.getElementById('cancelBtn').classList.add('hidden');
+            document.getElementById('imagePreview').style.display = 'none';
+        };
+
+        // --- СОХРАНЕНИЕ (ИЛИ ОБНОВЛЕНИЕ) ---
         document.getElementById('addForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             const msg = document.getElementById('adminMsg');
+            const editId = document.getElementById('editId').value;
             
             btn.disabled = true;
             btn.textContent = 'Сохранение...';
@@ -191,7 +211,7 @@
             const title = document.getElementById('title').value.trim();
             const tag = document.getElementById('tag').value.trim();
             const description = document.getElementById('description').value.trim();
-            const featuresRaw = document.getElementById('features').value.trim(); // БЕРЕМ ИЗ ПОЛЯ
+            const featuresRaw = document.getElementById('features').value.trim();
             const detailsRaw = document.getElementById('details').value.trim();
             const linkUrl = document.getElementById('linkUrl').value.trim();
             const fileInput = document.getElementById('imageFile');
@@ -212,48 +232,51 @@
                     });
 
                     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    
                     const { data, error } = await db.functions.invoke('upload-to-github', {
-                        body: {
-                            path: `assets/images/${fileName}`,
-                            content_base64: base64,
-                            message: `portfolio image: ${title}`,
-                            repo: 'angel-adel/portfolio'
-                        }
+                        body: { path: `assets/images/${fileName}`, content_base64: base64, message: `portfolio: ${title}`, repo: 'angel-adel/portfolio' }
                     });
-
-                    if (error) throw new Error("Ошибка загрузки картинки: " + error.message);
-                    if (data && data.error) throw new Error("Ошибка GitHub: " + data.error);
-                    
+                    if (error) throw new Error(error.message);
+                    if (data && data.error) throw new Error(data.error);
                     imageUrl = data.url;
                 }
 
-                const { error: dbError } = await db.from('portfolio').insert({
-                    title: title,
-                    tag: tag || null,
-                    description: description,
-                    features: features, // СОХРАНЯЕМ В БАЗУ
-                    details: details,
-                    link_url: linkUrl || null,
-                    image_url: imageUrl,
-                    published: true
-                });
+                const projectData = {
+                    title: title, tag: tag || null, description: description, features: features, details: details,
+                    link_url: linkUrl || null, published: true
+                };
+                
+                // Если загрузили новую картинку, прикрепляем её
+                if (imageUrl) projectData.image_url = imageUrl;
 
-                if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+                if (editId) {
+                    // ОБНОВЛЕНИЕ
+                    const { error: dbError } = await db.from('portfolio').update(projectData).eq('id', editId);
+                    if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+                    msg.textContent = '✅ Проект обновлен!';
+                } else {
+                    // СОЗДАНИЕ НОВОГО
+                    const { error: dbError } = await db.from('portfolio').insert(projectData);
+                    if (dbError) throw new Error("Ошибка базы: " + dbError.message);
+                    msg.textContent = '✅ Проект опубликован!';
+                }
 
-                msg.textContent = '✅ Проект опубликован!';
                 msg.className = 'msg ok';
                 
+                // Сброс формы
                 document.getElementById('addForm').reset();
+                document.getElementById('editId').value = '';
                 document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('formTitle').innerText = 'Добавить проект';
+                document.getElementById('cancelBtn').classList.add('hidden');
+                btn.textContent = '💾 Опубликовать';
+                
                 loadPortfolio();
 
             } catch (err) {
                 msg.textContent = '❌ ' + err.message;
                 msg.className = 'msg error';
-            } finally {
                 btn.disabled = false;
-                btn.textContent = '💾 Опубликовать';
+                btn.textContent = editId ? '💾 Обновить' : '💾 Опубликовать';
             }
         };
     </script>
