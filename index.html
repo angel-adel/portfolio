@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Портфолио разработчика Adel. Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
+    
+    <!-- Open Graph для шаринга -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Adel · Портфолио разработчика">
+    <meta property="og:description" content="Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
+    <meta property="og:url" content="https://angel-adel.github.io/">
+    <!-- Замени на свою картинку-превью 1200x630 -->
+    <meta property="og:image" content="https://angel-adel.github.io/preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    
     <title>Adel · Портфолио разработчика</title>
+    
+    <!-- Favicon (emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+    
     <style>
         /* ===== CSS Переменные ===== */
         :root {
-            /* ТЁМНАЯ ТЕМА */
             --bg-primary: #130a1e;
             --bg-card: #1c112b;
             --bg-card-hover: #261638;
@@ -22,7 +35,6 @@
             --radius: 16px;
         }
 
-        /* СВЕТЛАЯ ТЕМА */
         [data-theme="light"] {
             --bg-primary: #f5f0ff;
             --bg-card: #ffffff;
@@ -36,10 +48,7 @@
             --border: #e9d9ff;
         }
 
-        /* ===== Базовые стили ===== */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         * {
             margin: 0;
@@ -56,40 +65,32 @@
             padding: 2rem 1rem;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1100px; margin: 0 auto; }
 
-        /* ===== Заголовок ===== */
+        /* ===== Шапка ===== */
         .header {
             text-align: center;
             padding: 3rem 0 4rem 0;
             border-bottom: 1px solid var(--border);
             margin-bottom: 3rem;
         }
-
         .header h1 {
             font-size: 3rem;
             font-weight: 700;
             letter-spacing: -1px;
             margin-bottom: 0.5rem;
         }
-
         .header h1 span {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .header .subtitle {
             font-size: 1.25rem;
             color: var(--text-secondary);
-            font-weight: 400;
             margin-bottom: 0.5rem;
         }
-
         .header .bio {
             font-size: 0.95rem;
             color: var(--text-muted);
@@ -97,14 +98,12 @@
             margin: 0 auto 1.5rem auto;
             line-height: 1.6;
         }
-
         .header .contacts {
             display: flex;
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
         }
-
         .header .contacts a {
             color: var(--text-secondary);
             text-decoration: none;
@@ -115,7 +114,6 @@
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.02);
         }
-
         .header .contacts a:hover {
             background: var(--bg-card-hover);
             color: var(--text-primary);
@@ -124,13 +122,92 @@
             transform: translateY(-2px);
         }
 
-        /* ===== Сетка карточек ===== */
+        /* ===== Панель фильтров ===== */
+        .catalog-controls {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .search-wrap { position: relative; margin-bottom: 1rem; }
+        .search-wrap .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #searchInput:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .filter-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            min-width: 90px;
+        }
+        .chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .chip {
+            padding: 0.4rem 0.9rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .chip:hover { border-color: var(--accent); color: var(--text-primary); }
+        .chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .results-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            min-height: 1.2em;
+        }
+        .results-info .empty { color: var(--accent-light); }
+
+        /* ===== Сетка ===== */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
-            align-items: start; /* Важно для аккордеона */
+            align-items: start;
         }
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        .no-results .big { font-size: 2.5rem; margin-bottom: 1rem; }
 
         /* ===== Карточка ===== */
         .card {
@@ -146,14 +223,12 @@
             animation: fadeInUp 0.6s ease-out forwards;
             position: relative;
         }
-
         .card:hover {
             border-color: var(--accent);
             background: var(--bg-card-hover);
             transform: translateY(-4px);
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
         }
-
         .card .tag {
             font-size: 0.75rem;
             color: var(--accent);
@@ -162,7 +237,6 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
         .card h2 {
             font-size: 1.4rem;
             font-weight: 600;
@@ -171,33 +245,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 0.5rem;
         }
-
         .card h2::after {
             content: "▼";
             font-size: 0.8rem;
             color: var(--text-muted);
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
-
         .card.active h2::after {
             transform: rotate(180deg);
             color: var(--accent);
         }
 
-        /* Скрытый контент */
+        /* Аккордеон через grid-rows — фикс max-height */
         .card-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
             opacity: 0;
+            margin-top: 0;
         }
-
         .card.active .card-content {
-            max-height: 2000px; /* Достаточно много, чтобы влезло всё */
+            grid-template-rows: 1fr;
             opacity: 1;
             margin-top: 1rem;
         }
+        .card-content-inner { overflow: hidden; }
 
         .card p {
             color: var(--text-secondary);
@@ -205,13 +280,7 @@
             font-size: 0.95rem;
             line-height: 1.7;
         }
-
-        .card ul {
-            list-style: none;
-            margin: 0 0 1.5rem 0;
-            padding: 0;
-        }
-
+        .card ul { list-style: none; margin: 0 0 1.5rem 0; padding: 0; }
         .card ul li {
             padding: 0.4rem 0;
             padding-left: 1.5rem;
@@ -220,15 +289,8 @@
             color: var(--text-secondary);
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
-        
-        [data-theme="light"] .card ul li {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .card ul li:last-child {
-            border-bottom: none;
-        }
-
+        [data-theme="light"] .card ul li { border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+        .card ul li:last-child { border-bottom: none; }
         .card ul li::before {
             content: "▹";
             position: absolute;
@@ -238,13 +300,7 @@
         }
 
         /* ===== Кнопки ===== */
-        .btn-group {
-            margin-top: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-
+        .btn-group { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
         .btn {
             display: inline-flex;
             align-items: center;
@@ -259,29 +315,12 @@
             min-width: 120px;
             text-align: center;
         }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        [data-theme="light"] .btn-secondary {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--text-muted);
-        }
-
         .btn-primary {
             background: var(--accent);
             color: #fff;
             border: 1px solid var(--accent);
             font-weight: 600;
         }
-
         .btn-primary:hover {
             background: var(--accent-light);
             border-color: var(--accent-light);
@@ -295,7 +334,6 @@
             gap: 0.8rem;
             margin: 1rem 0;
         }
-
         .screenshots a {
             border-radius: 12px;
             border: 1px solid var(--border);
@@ -304,12 +342,7 @@
             background: var(--bg-primary);
             display: block;
         }
-
-        .screenshots a:hover {
-            border-color: var(--accent);
-            transform: scale(1.03);
-        }
-
+        .screenshots a:hover { border-color: var(--accent); transform: scale(1.03); }
         .screenshots img {
             width: 100%;
             height: 100%;
@@ -318,19 +351,7 @@
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-
-        .screenshots a:hover img {
-            transform: scale(1.1);
-        }
-
-        .screenshot-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-align: center;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-            font-style: italic;
-        }
+        .screenshots a:hover img { transform: scale(1.1); }
 
         /* ===== Бейджи ===== */
         .feature-badge {
@@ -344,9 +365,43 @@
             margin-right: 0.4rem;
             margin-bottom: 0.4rem;
         }
-        
-        [data-theme="light"] .feature-badge {
-            background: rgba(124, 58, 237, 0.08);
+        [data-theme="light"] .feature-badge { background: rgba(124, 58, 237, 0.08); }
+
+        /* ===== О сайте ===== */
+        .about-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .about-section h2 { margin-bottom: 1rem; font-size: 1.6rem; }
+        .about-section h3 {
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        .about-section p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem; }
+        .stack-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .about-section .contacts {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .about-section .contacts a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .about-section .contacts a:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
         /* ===== Подвал ===== */
@@ -358,22 +413,13 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
-
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer a:hover {
-            color: var(--accent-light);
-            text-decoration: underline;
-        }
+        .footer a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        .footer a:hover { color: var(--accent-light); text-decoration: underline; }
 
         /* ===== Кнопка темы ===== */
         .theme-toggle {
             position: fixed;
-            bottom: 20px;
+            bottom: max(20px, env(safe-area-inset-bottom));
             right: 20px;
             width: 48px;
             height: 48px;
@@ -389,21 +435,20 @@
             z-index: 1000;
             transition: transform 0.2s, background 0.3s;
         }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
+        .theme-toggle:hover { transform: scale(1.1); }
 
         /* ===== Анимации ===== */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            html { scroll-behavior: auto; }
         }
 
         /* ===== Адаптив ===== */
@@ -414,6 +459,8 @@
             .card { padding: 1.2rem; }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; }
+            .filter-label { min-width: auto; }
+            .about-section { padding: 1.2rem; }
         }
     </style>
 </head>
@@ -435,10 +482,51 @@
             </div>
         </header>
 
-        <!-- ===== СЕТКА ПРОЕКТОВ ===== -->
-        <main class="projects-grid">
+        <!-- ===== ПАНЕЛЬ ФИЛЬТРОВ ===== -->
+        <section class="catalog-controls" aria-label="Поиск и фильтры">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="search" id="searchInput" placeholder="Поиск по названию, тегам, описанию..." autocomplete="off">
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Платформа:</span>
+                <div class="chips" id="platformChips">
+                    <button class="chip active" data-value="all">Все</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Язык:</span>
+                <div class="chips" id="languageChips">
+                    <button class="chip active" data-value="all">Все</button>
+                </div>
+            </div>
+            <div class="results-info" id="resultsInfo"></div>
+        </section>
 
-        </main>
+        <!-- ===== СЕТКА ПРОЕКТОВ ===== -->
+        <main class="projects-grid" id="projects"></main>
+
+        <!-- ===== О САЙТЕ ===== -->
+        <section id="about" class="about-section">
+            <h2>О сайте</h2>
+            <p>
+                Здесь я собираю свои проекты — десктопные приложения, Android-утилиты и веб-сервисы.
+                Фильтры и поиск помогают быстро найти нужное.
+            </p>
+            <h3>Стек</h3>
+            <div class="stack-badges">
+                <span class="feature-badge">Python</span>
+                <span class="feature-badge">C# / .NET</span>
+                <span class="feature-badge">JavaScript</span>
+                <span class="feature-badge">Supabase</span>
+            </div>
+            <h3>Связаться</h3>
+            <div class="contacts">
+                <a href="https://max.ru/channel_Adel_soft" target="_blank" rel="noopener">✈️ MAX</a>
+                <a href="mailto:adel.angel2026@gmail.com">📧 Почта</a>
+                <a href="https://github.com/angel-adel" target="_blank" rel="noopener">🐙 GitHub</a>
+            </div>
+        </section>
 
         <!-- ===== ПОДВАЛ ===== -->
         <footer class="footer">
@@ -450,125 +538,226 @@
         </footer>
     </div>
 
-        <!-- Подключаем Supabase -->
+    <!-- Кнопка темы -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+
+    <!-- Supabase + DOMPurify -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-        <!-- Подключаем Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+
     <script>
-        // ⚠️ ВСТАВЬ СВОЙ ANON КЛЮЧ
+        // ⚠️ ЗАМЕНИ НА ANON КЛЮЧ (role: "anon", не service_role!)
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWZsZ3BrYnp2ZHRsZWlkdGp3Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5Mjk0ODE0MywiZXhwIjoyMTA4NTI0MTQzfQ.5q4asB-_LFhDnzikW_tWM37RzVq85YQGAEeP4ZMF0dU';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        let allProjects = [];
+        const state = { search: '', platform: 'all', language: 'all' };
+
+        // Экранирование HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        // Загрузка
         async function loadPortfolio() {
-            const grid = document.querySelector('.projects-grid');
-            if (!grid) return;
-            
+            const grid = document.getElementById('projects');
             try {
-                const { data: projects, error } = await db
+                const { data, error } = await db
                     .from('portfolio')
                     .select('*')
                     .eq('published', true)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-                if (!projects || projects.length === 0) return;
 
-                // Очищаем сетку (на всякий случай) и рендерим
-                grid.innerHTML = '';
+                allProjects = data || [];
+                buildFilterChips();
+                applyFilters();
+            } catch (err) {
+                console.error('Ошибка загрузки:', err);
+                grid.innerHTML = '<div class="no-results"><div class="big">😔</div><p>Не удалось загрузить проекты. Попробуйте обновить страницу.</p></div>';
+            }
+        }
 
-                projects.forEach((p, index) => {
-                    // 1. Бейджи
-                    let badgesHtml = '';
-                    if (p.features && p.features.length > 0) {
-                        badgesHtml = '<div style="margin-bottom: 1.2rem;">';
-                        p.features.forEach(f => {
-                            badgesHtml += `<span class="feature-badge">${f}</span>`;
-                        });
-                        badgesHtml += '</div>';
-                    }
+        // Чипы фильтров
+        function buildFilterChips() {
+            const platforms = new Set();
+            const languages = new Set();
+            allProjects.forEach(p => {
+                if (p.platform) platforms.add(p.platform);
+                (p.languages || []).forEach(l => languages.add(l));
+            });
 
-                    // 2. Картинка
-                    let imageHtml = '';
-                    if (p.image_url) {
-                        imageHtml = `
-                            <div class="screenshots" style="grid-template-columns: 1fr;">
-                                <a href="${p.image_url}" target="_blank"><img src="${p.image_url}" alt="${p.title}"></a>
-                            </div>
-                        `;
-                    }
+            const platformChips = document.getElementById('platformChips');
+            const languageChips = document.getElementById('languageChips');
 
-                    // 3. Список деталей
-                    let listHtml = '';
-                    if (p.details && p.details.length > 0) {
-                        listHtml = '<ul>';
-                        p.details.forEach(d => {
-                            listHtml += `<li>${d}</li>`;
-                        });
-                        listHtml += '</ul>';
-                    }
+            const renderChips = (container, values, type) => {
+                values.sort();
+                values.forEach(v => {
+                    const btn = document.createElement('button');
+                    btn.className = 'chip';
+                    btn.dataset.value = v;
+                    btn.textContent = v;
+                    btn.addEventListener('click', () => {
+                        container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        state[type] = v;
+                        applyFilters();
+                    });
+                    container.appendChild(btn);
+                });
+            };
 
-                    // 4. Кнопка
-                    let buttonHtml = '';
-                    if (p.link_url) {
-                        buttonHtml = `
-                            <div class="btn-group">
-                                <a href="${p.link_url}" target="_blank" rel="noopener" class="btn btn-primary">🌐 Открыть проект</a>
-                            </div>
-                        `;
-                    }
+            renderChips(platformChips, [...platforms], 'platform');
+            renderChips(languageChips, [...languages], 'language');
 
-                    // Собираем карточку
-                    const card = document.createElement('article');
-                    card.className = 'card';
-                    card.style.animationDelay = `${index * 0.1}s`;
-                    
-                    // Вставляем описание как есть (оно может содержать HTML-теги, которые мы добавим в админке)
-                    card.innerHTML = `
-                        <div class="tag">${p.tag || 'Проект'}</div>
-                        <h2>${p.title}</h2>
-                        <div class="card-content">
-                            <div class="description-html">${p.description}</div>
+            // Обработчики «Все»
+            platformChips.querySelector('.chip[data-value="all"]').addEventListener('click', (e) => {
+                platformChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                state.platform = 'all';
+                applyFilters();
+            });
+            languageChips.querySelector('.chip[data-value="all"]').addEventListener('click', (e) => {
+                languageChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                state.language = 'all';
+                applyFilters();
+            });
+        }
+
+        // Фильтрация
+        function applyFilters() {
+            const q = state.search.trim().toLowerCase();
+            const filtered = allProjects.filter(p => {
+                if (state.platform !== 'all' && p.platform !== state.platform) return false;
+                if (state.language !== 'all' && !(p.languages || []).includes(state.language)) return false;
+                if (q) {
+                    const haystack = [
+                        p.title || '', p.description || '', p.tag || '',
+                        ...(p.tags || []), ...(p.languages || []),
+                        ...(p.details || []), ...(p.features || [])
+                    ].join(' ').toLowerCase();
+                    if (!haystack.includes(q)) return false;
+                }
+                return true;
+            });
+
+            renderCards(filtered);
+            updateResultsInfo(filtered.length, q || state.platform !== 'all' || state.language !== 'all');
+        }
+
+        function updateResultsInfo(count, isFiltered) {
+            const info = document.getElementById('resultsInfo');
+            if (!isFiltered) info.textContent = `Всего проектов: ${count}`;
+            else if (count === 0) info.innerHTML = '<span class="empty">Ничего не найдено. Попробуйте изменить запрос.</span>';
+            else info.textContent = `Найдено: ${count}`;
+        }
+
+        // Рендер карточек
+        function renderCards(projects) {
+            const grid = document.getElementById('projects');
+            grid.innerHTML = '';
+
+            if (projects.length === 0) {
+                grid.innerHTML = '<div class="no-results"><div class="big">🔍</div><p>Ничего не нашлось</p></div>';
+                return;
+            }
+
+            projects.forEach((p, index) => {
+                let badgesHtml = '';
+                if (p.features && p.features.length > 0) {
+                    badgesHtml = '<div style="margin-bottom: 1.2rem;">';
+                    p.features.forEach(f => badgesHtml += `<span class="feature-badge">${escapeHtml(f)}</span>`);
+                    badgesHtml += '</div>';
+                }
+
+                let imageHtml = '';
+                if (p.image_url) {
+                    imageHtml = `
+                        <div class="screenshots" style="grid-template-columns: 1fr;">
+                            <a href="${escapeHtml(p.image_url)}" target="_blank" rel="noopener">
+                                <img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" loading="lazy">
+                            </a>
+                        </div>
+                    `;
+                }
+
+                let listHtml = '';
+                if (p.details && p.details.length > 0) {
+                    listHtml = '<ul>';
+                    p.details.forEach(d => listHtml += `<li>${escapeHtml(d)}</li>`);
+                    listHtml += '</ul>';
+                }
+
+                let buttonHtml = '';
+                if (p.link_url) {
+                    buttonHtml = `
+                        <div class="btn-group">
+                            <a href="${escapeHtml(p.link_url)}" target="_blank" rel="noopener" class="btn btn-primary">🌐 Открыть проект</a>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.style.animationDelay = `${Math.min(index * 0.1, 0.6)}s`;
+
+                // DOMPurify для description (там может быть HTML из админки)
+                const safeDescription = window.DOMPurify
+                    ? DOMPurify.sanitize(p.description || '')
+                    : escapeHtml(p.description || '');
+
+                card.innerHTML = `
+                    <div class="tag">${escapeHtml(p.tag || 'Проект')}</div>
+                    <h2>${escapeHtml(p.title)}</h2>
+                    <div class="card-content">
+                        <div class="card-content-inner">
+                            <div class="description-html">${safeDescription}</div>
                             ${badgesHtml}
                             ${imageHtml}
                             ${listHtml}
                             ${buttonHtml}
                         </div>
-                    `;
+                    </div>
+                `;
 
-                    grid.appendChild(card);
+                grid.appendChild(card);
+            });
+
+            // Аккордеон (с защитой от выделения текста)
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    if (window.getSelection().toString()) return;
+                    card.classList.toggle('active');
                 });
-
-                // Навешиваем клики (аккордеон)
-                document.querySelectorAll('.card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        if (e.target.closest('a')) return;
-                        card.classList.toggle('active');
-                    });
-                });
-
-            } catch (err) {
-                console.error('Ошибка загрузки:', err);
-            }
-        }
-
-        // Логика темы
-        const toggleBtn = document.getElementById('themeToggle');
-        const htmlEl = document.documentElement;
-
-        if (toggleBtn) {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            htmlEl.setAttribute('data-theme', savedTheme);
-            toggleBtn.textContent = savedTheme === 'light' ? '☀️' : '🌙';
-
-            toggleBtn.addEventListener('click', () => {
-                const newTheme = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                htmlEl.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                toggleBtn.textContent = newTheme === 'light' ? '☀️' : '🌙';
             });
         }
+
+        // Поиск
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            state.search = e.target.value;
+            applyFilters();
+        });
+
+        // Тема
+        const toggleBtn = document.getElementById('themeToggle');
+        const htmlEl = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        htmlEl.setAttribute('data-theme', savedTheme);
+        toggleBtn.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+
+        toggleBtn.addEventListener('click', () => {
+            const newTheme = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            htmlEl.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.textContent = newTheme === 'light' ? '☀️' : '🌙';
+        });
 
         loadPortfolio();
     </script>
