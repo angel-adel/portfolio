@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Портфолио разработчика Adel. Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
+    <meta name="description" content="Портфолио разработчика Ádel (Дмитрий). Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
     
-    <!-- Open Graph для шаринга -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Adel · Портфолио разработчика">
+    <meta property="og:title" content="Ádel · Портфолио разработчика">
     <meta property="og:description" content="Автоматизация, десктопные приложения и веб-разработка. Чистый код и удобные решения.">
     <meta property="og:url" content="https://angel-adel.github.io/">
-    <!-- Замени на свою картинку-превью 1200x630 -->
     <meta property="og:image" content="https://angel-adel.github.io/preview.png">
     <meta name="twitter:card" content="summary_large_image">
     
-    <title>Adel · Портфолио разработчика</title>
+    <title>Ádel · Портфолио разработчика</title>
     
-    <!-- Favicon (emoji) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
     
     <style>
@@ -62,7 +59,7 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
         }
 
         .container { max-width: 1100px; margin: 0 auto; }
@@ -70,12 +67,12 @@
         /* ===== Шапка ===== */
         .header {
             text-align: center;
-            padding: 3rem 0 4rem 0;
+            padding: 2rem 0 3rem 0;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
         .header h1 {
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 700;
             letter-spacing: -1px;
             margin-bottom: 0.5rem;
@@ -87,32 +84,36 @@
             background-clip: text;
         }
         .header .subtitle {
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3vw, 1.25rem);
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
         .header .bio {
             font-size: 0.95rem;
-            color: var(--text-muted);
-            max-width: 600px;
+            color: var(--text-secondary);
+            max-width: 650px;
             margin: 0 auto 1.5rem auto;
-            line-height: 1.6;
+            line-height: 1.7;
         }
+        .header .bio strong { color: var(--text-primary); font-weight: 600; }
         .header .contacts {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
         }
         .header .contacts a {
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.95rem;
-            padding: 0.5rem 1.2rem;
+            padding: 0.6rem 1.2rem;
             border: 1px solid var(--border);
             border-radius: 50px;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.02);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
         .header .contacts a:hover {
             background: var(--bg-card-hover);
@@ -122,10 +123,95 @@
             transform: translateY(-2px);
         }
 
+        /* ===== Раздел "История пути" (Таймлайн) ===== */
+        .story-section {
+            margin-bottom: 4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+        }
+        .story-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            border-left: 2px solid var(--border);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -2.4rem;
+            top: 0.3rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .timeline-year {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .timeline-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .timeline-text p { margin-bottom: 0.8rem; }
+        .timeline-text p:last-child { margin-bottom: 0; }
+
+        /* ===== Блок опыта КЦ ===== */
+        .experience-block {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .experience-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .experience-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+            color: var(--accent-light);
+        }
+        .experience-content p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
         /* ===== Панель фильтров ===== */
         .catalog-controls {
             margin-bottom: 2rem;
-            padding: 1.5rem;
+            padding: 1.2rem;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -138,15 +224,16 @@
             transform: translateY(-50%);
             opacity: 0.6;
             pointer-events: none;
+            font-size: 1.1rem;
         }
         #searchInput {
             width: 100%;
-            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 50px;
             color: var(--text-primary);
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-family: inherit;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -166,11 +253,11 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 500;
-            min-width: 90px;
+            min-width: 80px;
         }
         .chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
         .chip {
-            padding: 0.4rem 0.9rem;
+            padding: 0.4rem 1rem;
             background: transparent;
             border: 1px solid var(--border);
             border-radius: 50px;
@@ -179,6 +266,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
+            min-height: 36px;
         }
         .chip:hover { border-color: var(--accent); color: var(--text-primary); }
         .chip.active {
@@ -197,8 +285,8 @@
         /* ===== Сетка ===== */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
             align-items: start;
         }
         .no-results {
@@ -238,14 +326,15 @@
             margin-bottom: 0.5rem;
         }
         .card h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             gap: 0.5rem;
+            line-height: 1.4;
         }
         .card h2::after {
             content: "▼";
@@ -253,13 +342,13 @@
             color: var(--text-muted);
             transition: transform 0.3s ease;
             flex-shrink: 0;
+            margin-top: 0.2rem;
         }
         .card.active h2::after {
             transform: rotate(180deg);
             color: var(--accent);
         }
 
-        /* Аккордеон через grid-rows — фикс max-height */
         .card-content {
             display: grid;
             grid-template-rows: 0fr;
@@ -274,7 +363,7 @@
         }
         .card-content-inner { overflow: hidden; }
 
-        .card p {
+        .card .description-html p {
             color: var(--text-secondary);
             margin-bottom: 1.2rem;
             font-size: 0.95rem;
@@ -299,21 +388,21 @@
             font-weight: bold;
         }
 
-        /* ===== Кнопки ===== */
         .btn-group { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.7rem 1.2rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
             flex: 1;
             min-width: 120px;
             text-align: center;
+            min-height: 48px;
         }
         .btn-primary {
             background: var(--accent);
@@ -327,7 +416,6 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* ===== Скриншоты ===== */
         .screenshots {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -342,7 +430,7 @@
             background: var(--bg-primary);
             display: block;
         }
-        .screenshots a:hover { border-color: var(--accent); transform: scale(1.03); }
+        .screenshots a:hover { border-color: var(--accent); transform: scale(1.02); }
         .screenshots img {
             width: 100%;
             height: 100%;
@@ -351,9 +439,8 @@
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        .screenshots a:hover img { transform: scale(1.1); }
+        .screenshots a:hover img { transform: scale(1.05); }
 
-        /* ===== Бейджи ===== */
         .feature-badge {
             display: inline-block;
             background: rgba(168, 85, 247, 0.1);
@@ -367,7 +454,6 @@
         }
         [data-theme="light"] .feature-badge { background: rgba(124, 58, 237, 0.08); }
 
-        /* ===== О сайте ===== */
         .about-section {
             margin-top: 4rem;
             padding: 2rem;
@@ -393,10 +479,13 @@
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.95rem;
-            padding: 0.5rem 1.2rem;
+            padding: 0.6rem 1.2rem;
             border: 1px solid var(--border);
             border-radius: 50px;
             transition: all 0.3s ease;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
         .about-section .contacts a:hover {
             background: var(--bg-card-hover);
@@ -404,7 +493,6 @@
             border-color: var(--accent);
         }
 
-        /* ===== Подвал ===== */
         .footer {
             margin-top: 5rem;
             padding-top: 2rem;
@@ -416,13 +504,12 @@
         .footer a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
         .footer a:hover { color: var(--accent-light); text-decoration: underline; }
 
-        /* ===== Кнопка темы ===== */
         .theme-toggle {
             position: fixed;
             bottom: max(20px, env(safe-area-inset-bottom));
             right: 20px;
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -437,9 +524,8 @@
         }
         .theme-toggle:hover { transform: scale(1.1); }
 
-        /* ===== Анимации ===== */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -453,14 +539,19 @@
 
         /* ===== Адаптив ===== */
         @media (max-width: 600px) {
-            .header h1 { font-size: 2.2rem; }
-            .header .subtitle { font-size: 1.1rem; }
+            body { padding: 1rem 0.5rem; }
+            .header { padding: 1.5rem 0 2rem 0; }
             .projects-grid { grid-template-columns: 1fr; }
             .card { padding: 1.2rem; }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; }
-            .filter-label { min-width: auto; }
+            .filter-label { min-width: 100%; margin-bottom: 0.2rem; }
+            .filter-group { align-items: flex-start; flex-direction: column; gap: 0.4rem;}
             .about-section { padding: 1.2rem; }
+            .story-section { padding: 1.2rem; }
+            .timeline { padding-left: 1.2rem; }
+            .timeline-item::before { left: -1.6rem; }
+            .experience-block { flex-direction: column; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -469,11 +560,11 @@
 
         <!-- ===== ШАПКА ===== -->
         <header class="header">
-            <h1>Adel <span>·</span> Portfolio</h1>
+            <h1>Ádel <span>·</span> Portfolio</h1>
             <p class="subtitle">Разработчик · Автоматизация · Чистый код</p>
             <p class="bio">
-                Создаю удобные десктопные приложения и веб-сервисы. 
-                Фокус на производительности, минимализме и решении реальных задач.
+                Привет! Меня зовут <strong>Дмитрий</strong>, но в разработке и творчестве я известен как <strong>Ádel</strong>. 
+                Этот сайт — моя витрина проектов и история пути от тетрадки со стихами до создания инди-приложений.
             </p>
             <div class="contacts">
                 <a href="https://max.ru/channel_Adel_soft" target="_blank" rel="noopener">✈️ MAX</a>
@@ -482,11 +573,83 @@
             </div>
         </header>
 
+        <!-- ===== ИСТОРИЯ ПУТИ ===== -->
+        <section class="story-section">
+            <h2>От рифмы к коду: Рождение бренда Ádel</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2010 — Начало</div>
+                    <div class="timeline-title">Первые наброски</div>
+                    <div class="timeline-text">
+                        <p>Тогда меня звали просто Дмитрий, и я учился в 6 классе. Всё началось с тетрадки в 12 листов, где я писал стихи и поздравления для родных. Первая проба пера в крупной форме — повесть «Любовь к жизни», которая, увы, была утеряна. Но именно она зажгла во мне тягу к литературе.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2012 — Возвращение</div>
+                    <div class="timeline-title">Стихи и песни</div>
+                    <div class="timeline-text">
+                        <p>Творчество возвращается с произведением «К фонтану». Стихи идут потоком, вдохновлённые влюблённостью и пейзажами. Тогда же появляется тяга к песням Михаила Круга и группы «Бутырка» — я заучивал их и пел во дворе.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2015 — Выход в сеть</div>
+                    <div class="timeline-title">Портал Стихи.ру</div>
+                    <div class="timeline-text">
+                        <p>Мне советовали зарабатывать на стихах, но я твёрдо решил: творчество должно быть бескорыстным. Первое опубликованное произведение — «Капли дождя». С этого момента я окончательно перешёл в интернет-пространство.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2024 — Перелом</div>
+                    <div class="timeline-title">Ангел среди нас</div>
+                    <div class="timeline-text">
+                        <p>Всё меняется после песни Евгения Григорьева «Пушинка». Я записываю свой вариант, и 20 мая появляется песня «Ангел среди нас». Это становится талисманом. Тогда же я становлюсь волонтёром поисковой группы с позывным «Поэт», а образ ангела прочно входит в мою жизнь.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">Конец 2024 — Испания</div>
+                    <div class="timeline-title">Смена имиджа</div>
+                    <div class="timeline-text">
+                        <p>Испанский язык входит в мою жизнь через песню Натальи Орейро. Я начинаю собирать сборник, учить язык, переводить свои стихи. Ник меняется на Ангел поэзии, а затем — на Ángel de la poesía.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2025 — Ádel</div>
+                    <div class="timeline-title">Обретение имени</div>
+                    <div class="timeline-text">
+                        <p>Я сокращаю ник до Ádel (Ángel de la poesía). Переход на женский пол происходит в начале 2026 года. Ádel становится литературным псевдонимом. Это не просто имя — это границы: в жизни технарь, в литературе поэтесса.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2026 — Бренд</div>
+                    <div class="timeline-title">Рождение проекта</div>
+                    <div class="timeline-text">
+                        <p>В марте 2026 года я создаю литературный архив (более 600 произведений, 25000 читателей). Тогда же пишу свою первую программу для работы в чатах. Сначала на Python, затем переписываю на Java. Под псевдонимом Ádel выходят программы Memstik, Скриптонайзер, социальная сеть Smartsocial и другие утилиты. Настоящее имя — только в паспорте, всё остальное — творчество.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Опыт в КЦ -->
+            <div class="experience-block">
+                <div class="experience-icon">📞</div>
+                <div class="experience-content">
+                    <h3>Опыт в клиентском сервисе: 6+ лет</h3>
+                    <p>Мой путь в IT начался не с институтской скамьи, а с реальной работы с людьми. От голосовой поддержки до роли руководителя группы (РГ). Здесь я научился главному: слышать, понимать и решать проблемы. Теперь я делаю то же самое, но кодом — создаю удобные интерфейсы и автоматизирую процессы.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- ===== ПАНЕЛЬ ФИЛЬТРОВ ===== -->
         <section class="catalog-controls" aria-label="Поиск и фильтры">
             <div class="search-wrap">
                 <span class="search-icon">🔍</span>
-                <input type="search" id="searchInput" placeholder="Поиск по названию, тегам, описанию..." autocomplete="off">
+                <input type="search" id="searchInput" placeholder="Поиск по названию, тегам, описанию..." autocomplete="off" aria-label="Поиск проектов">
             </div>
             <div class="filter-group">
                 <span class="filter-label">Платформа:</span>
@@ -506,21 +669,23 @@
         <!-- ===== СЕТКА ПРОЕКТОВ ===== -->
         <main class="projects-grid" id="projects"></main>
 
-        <!-- ===== О САЙТЕ ===== -->
+        <!-- ===== О САЙТЕ / СТЕК ===== -->
         <section id="about" class="about-section">
-            <h2>О сайте</h2>
+            <h2>О сайте и стеке</h2>
             <p>
-                Здесь я собираю свои проекты — десктопные приложения, Android-утилиты и веб-сервисы.
-                Фильтры и поиск помогают быстро найти нужное.
+                Это не просто витрина, а мой рабочий инструмент. Здесь я собираю проекты, которые делал для себя, 
+                для друзей и для практики. Сайт использует Supabase как базу данных и GitHub Pages для хостинга — 
+                всё работает быстро, без лишних зависимостей.
             </p>
-            <h3>Стек</h3>
+            <h3>Стек технологий</h3>
             <div class="stack-badges">
                 <span class="feature-badge">Python</span>
                 <span class="feature-badge">C# / .NET</span>
                 <span class="feature-badge">JavaScript</span>
+                <span class="feature-badge">Java</span>
                 <span class="feature-badge">Supabase</span>
             </div>
-            <h3>Связаться</h3>
+            <h3>Связаться со мной</h3>
             <div class="contacts">
                 <a href="https://max.ru/channel_Adel_soft" target="_blank" rel="noopener">✈️ MAX</a>
                 <a href="mailto:adel.angel2026@gmail.com">📧 Почта</a>
@@ -531,7 +696,7 @@
         <!-- ===== ПОДВАЛ ===== -->
         <footer class="footer">
             <p>
-                ✦ 2026 · Adel · 
+                ✦ 2026 · Ádel · 
                 <a href="https://github.com/angel-adel" target="_blank" rel="noopener">GitHub</a> · 
                 <a href="https://max.ru/channel_Adel_soft" target="_blank" rel="noopener">Канал в MAX</a>
             </p>
@@ -546,15 +711,15 @@
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 
     <script>
-        // ⚠️ ЗАМЕНИ НА ANON КЛЮЧ (role: "anon", не service_role!)
+        // ⚠️ НЕ ЗАБУДЬ ВСТАВИТЬ СЮДА НОВЫЙ КЛЮЧ public_web
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_g3PKWDWVawijHa_aggKf8g_0mwWqBRh';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_PUBLISHABLE_KEY = 'ВСТАВЬ_СЮДА_КЛЮЧ_public_web'; 
+        
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
         let allProjects = [];
         const state = { search: '', platform: 'all', language: 'all' };
 
-        // Экранирование HTML
         function escapeHtml(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, m => ({
@@ -562,7 +727,6 @@
             }[m]));
         }
 
-        // Загрузка
         async function loadPortfolio() {
             const grid = document.getElementById('projects');
             try {
@@ -583,7 +747,6 @@
             }
         }
 
-        // Чипы фильтров
         function buildFilterChips() {
             const platforms = new Set();
             const languages = new Set();
@@ -594,6 +757,9 @@
 
             const platformChips = document.getElementById('platformChips');
             const languageChips = document.getElementById('languageChips');
+
+            platformChips.innerHTML = '<button class="chip active" data-value="all">Все</button>';
+            languageChips.innerHTML = '<button class="chip active" data-value="all">Все</button>';
 
             const renderChips = (container, values, type) => {
                 values.sort();
@@ -615,7 +781,6 @@
             renderChips(platformChips, [...platforms], 'platform');
             renderChips(languageChips, [...languages], 'language');
 
-            // Обработчики «Все»
             platformChips.querySelector('.chip[data-value="all"]').addEventListener('click', (e) => {
                 platformChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
                 e.target.classList.add('active');
@@ -630,7 +795,6 @@
             });
         }
 
-        // Фильтрация
         function applyFilters() {
             const q = state.search.trim().toLowerCase();
             const filtered = allProjects.filter(p => {
@@ -658,7 +822,6 @@
             else info.textContent = `Найдено: ${count}`;
         }
 
-        // Рендер карточек
         function renderCards(projects) {
             const grid = document.getElementById('projects');
             grid.innerHTML = '';
@@ -707,7 +870,6 @@
                 card.className = 'card';
                 card.style.animationDelay = `${Math.min(index * 0.1, 0.6)}s`;
 
-                // DOMPurify для description (там может быть HTML из админки)
                 const safeDescription = window.DOMPurify
                     ? DOMPurify.sanitize(p.description || '')
                     : escapeHtml(p.description || '');
@@ -729,7 +891,6 @@
                 grid.appendChild(card);
             });
 
-            // Аккордеон (с защитой от выделения текста)
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('click', (e) => {
                     if (e.target.closest('a')) return;
@@ -739,13 +900,11 @@
             });
         }
 
-        // Поиск
         document.getElementById('searchInput').addEventListener('input', (e) => {
             state.search = e.target.value;
             applyFilters();
         });
 
-        // Тема
         const toggleBtn = document.getElementById('themeToggle');
         const htmlEl = document.documentElement;
         const savedTheme = localStorage.getItem('theme') || 'dark';
