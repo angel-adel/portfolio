@@ -8,10 +8,11 @@
         .card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
         label { font-weight: 600; display: block; margin-top: 1rem; font-size: 0.9rem; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
+        input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
         textarea { resize: vertical; min-height: 100px; }
         button { background: #7c3a8c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 1rem; font-weight: 600; transition: 0.2s; }
         button:hover { background: #5a2a67; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-outline { background: transparent; color: #7c3a8c; border: 2px solid #7c3a8c; }
         .btn-outline:hover { background: #7c3a8c; color: white; }
         .btn-danger { background: #dc3545; margin: 0; padding: 5px 10px; font-size: 0.8rem; }
@@ -23,6 +24,7 @@
         th, td { text-align: left; padding: 10px 5px; border-bottom: 1px solid #eee; }
         .list-card { margin-top: 2rem; border-top: 2px dashed #eee; padding-top: 1rem; }
         small { color: #888; display: block; margin-top: 3px; font-size: 0.8rem; }
+        .header-info { font-size: 0.9rem; color: #666; }
 
         .editor-container { display: flex; gap: 1rem; flex-wrap: wrap; }
         .editor-box { flex: 1; min-width: 300px; }
@@ -30,13 +32,15 @@
         .preview-box h3 { margin-top: 0; font-size: 0.9rem; color: #666; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
         .preview-content { font-size: 0.95rem; }
     </style>
+    <!-- Подключаем DOMPurify для безопасного превью -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 </head>
 <body>
 
     <div class="card" id="loginScreen">
         <h2>🔐 Вход в админку портфолио</h2>
         <label>Email</label>
-        <input type="email" id="email" placeholder="angel.adel2026@yandex.ru">
+        <input type="email" id="email" placeholder="Введите email">
         <label>Пароль</label>
         <input type="password" id="password" placeholder="********">
         <button id="loginBtn">Войти</button>
@@ -45,12 +49,15 @@
 
     <div class="card hidden" id="adminScreen">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>💼 Управление портфолио</h2>
+            <div>
+                <h2>💼 Управление портфолио</h2>
+                <div class="header-info">Вы вошли как: <b id="userEmailDisplay"></b></div>
+            </div>
             <button class="btn-outline" id="logoutBtn" style="margin-top: 0;">Выйти</button>
         </div>
 
         <form id="addForm">
-            <h3 id="formTitle">Добавить проект</h3>
+            <h3 id="formTitle" style="margin-top: 1.5rem;">Добавить проект</h3>
             <input type="hidden" id="editId" value="">
             
             <label>Название проекта</label>
@@ -65,7 +72,7 @@
                     <textarea id="description" required></textarea>
                 </div>
                 <div class="preview-box">
-                    <h3>Превью:</h3>
+                    <h3>Безопасное превью:</h3>
                     <div class="preview-content" id="descPreview">...</div>
                 </div>
             </div>
@@ -78,6 +85,12 @@
 
             <label>Ссылка</label>
             <input type="url" id="linkUrl">
+
+            <label>Статус публикации</label>
+            <select id="published">
+                <option value="true">Опубликован (виден на сайте)</option>
+                <option value="false">Черновик (скрыт)</option>
+            </select>
 
             <label>Обложка / Скриншот</label>
             <input type="file" id="imageFile" accept="image/*">
@@ -98,34 +111,45 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ⚠️ ВСТАВЬ СЮДА НОВЫЙ КЛЮЧ public_web
         const SUPABASE_URL = 'https://qoqflgpkbzvdtleidtjw.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_g3PKWDWVawijHa_aggKf8g_0mwWqBRh';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_PUBLISHABLE_KEY = 'ВСТАВЬ_СЮДА_КЛЮЧ_public_web'; 
+        
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
         let projectsData = [];
 
+        // Безопасное превью описания
         document.getElementById('description').addEventListener('input', (e) => {
-            document.getElementById('descPreview').innerHTML = e.target.value;
+            const rawHtml = e.target.value;
+            const safeHtml = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml;
+            document.getElementById('descPreview').innerHTML = safeHtml;
         });
 
+        // Вход
         document.getElementById('loginBtn').onclick = async () => {
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = 'Вход...';
+            
             const { data, error } = await db.auth.signInWithPassword({ 
                 email: document.getElementById('email').value, 
                 password: document.getElementById('password').value 
             });
+            
             if (error) { 
                 document.getElementById('loginMsg').textContent = '❌ ' + error.message; 
                 document.getElementById('loginMsg').className = 'msg error'; 
-            } else { 
-                document.getElementById('loginScreen').classList.add('hidden'); 
-                document.getElementById('adminScreen').classList.remove('hidden'); 
-                loadPortfolio(); 
+                btn.disabled = false;
+                btn.textContent = 'Войти';
             }
         };
 
+        // Отслеживание сессии
         db.auth.onAuthStateChange((event, session) => {
             if (session) { 
                 document.getElementById('loginScreen').classList.add('hidden'); 
                 document.getElementById('adminScreen').classList.remove('hidden'); 
+                document.getElementById('userEmailDisplay').textContent = session.user.email;
                 loadPortfolio(); 
             } else { 
                 document.getElementById('loginScreen').classList.remove('hidden'); 
@@ -135,19 +159,7 @@
 
         document.getElementById('logoutBtn').onclick = () => db.auth.signOut();
 
-        document.getElementById('imageFile').onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const img = document.getElementById('imagePreview');
-                    img.src = ev.target.result;
-                    img.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
+        // Загрузка списка
         async function loadPortfolio() {
             const container = document.getElementById('recentList');
             container.innerHTML = 'Загрузка...';
@@ -158,13 +170,15 @@
             if (!data || data.length === 0) { container.innerHTML = 'Проектов пока нет.'; return; }
 
             projectsData = data;
-            let html = '<table><thead><tr><th>Название</th><th>Действие</th></tr></thead><tbody>';
+            let html = '<table><thead><tr><th>Название</th><th>Статус</th><th>Действие</th></tr></thead><tbody>';
             
             data.forEach(item => {
+                const status = item.published ? '🟢 Опубл.' : '🟡 Черновик';
                 html += `<tr>
                             <td>${item.title}</td>
+                            <td>${status}</td>
                             <td>
-                                <button class="btn-edit" data-id="${item.id}">✏️ Ред.</button>
+                                <button class="btn-edit" data-id="${item.id}">✏️</button>
                                 <button class="btn-danger" data-id="${item.id}">🗑️</button>
                             </td>
                          </tr>`;
@@ -172,21 +186,36 @@
             html += '</tbody></table>';
             container.innerHTML = html;
 
-            // Навешиваем события на кнопки
             document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.onclick = () => editProject(parseInt(btn.dataset.id));
+                btn.onclick = () => editProject(btn.dataset.id);
             });
             document.querySelectorAll('.btn-danger').forEach(btn => {
-                btn.onclick = () => deleteProject(parseInt(btn.dataset.id));
+                btn.onclick = () => deleteProject(btn.dataset.id);
             });
         }
 
+        // Удаление через Edge Function
         async function deleteProject(id) {
             if (!confirm('Удалить проект?')) return;
-            const { error } = await db.from('portfolio').delete().eq('id', id);
-            if (error) alert('❌ Ошибка: ' + error.message); else loadPortfolio();
+            
+            const session = (await db.auth.getSession()).data.session;
+            if (!session) return alert('Сессия истекла, войдите заново');
+
+            const res = await fetch(`${SUPABASE_URL}/functions/v1/portfolio-admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`,
+                    'apikey': SUPABASE_PUBLISHABLE_KEY
+                },
+                body: JSON.stringify({ action: 'delete', payload: { id } })
+            });
+            
+            if (res.ok) loadPortfolio();
+            else alert('❌ Ошибка удаления');
         }
 
+        // Редактирование
         function editProject(id) {
             const p = projectsData.find(item => item.id === id);
             if (!p) return alert("Проект не найден");
@@ -196,10 +225,11 @@
             document.getElementById('title').value = p.title || '';
             document.getElementById('tag').value = p.tag || '';
             document.getElementById('description').value = p.description || '';
-            document.getElementById('descPreview').innerHTML = p.description || '';
+            document.getElementById('descPreview').innerHTML = DOMPurify.sanitize(p.description || '');
             document.getElementById('features').value = (p.features || []).join(', ');
             document.getElementById('details').value = (p.details || []).join('\n');
             document.getElementById('linkUrl').value = p.link_url || '';
+            document.getElementById('published').value = p.published ? 'true' : 'false';
             
             if (p.image_url) {
                 document.getElementById('imagePreview').src = p.image_url;
@@ -213,6 +243,7 @@
             document.getElementById('addForm').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Отмена редактирования
         document.getElementById('cancelBtn').onclick = () => {
             document.getElementById('addForm').reset();
             document.getElementById('descPreview').innerHTML = '...';
@@ -223,6 +254,7 @@
             document.getElementById('imagePreview').style.display = 'none';
         };
 
+        // Сохранение через Edge Function
         document.getElementById('addForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
@@ -233,20 +265,24 @@
             btn.textContent = 'Сохранение...';
             msg.className = 'msg'; msg.style.display = 'none';
 
+            const session = (await db.auth.getSession()).data.session;
+            if (!session) return alert('Сессия истекла, войдите заново');
+
             const title = document.getElementById('title').value.trim();
             const tag = document.getElementById('tag').value.trim();
             const description = document.getElementById('description').value.trim();
             const featuresRaw = document.getElementById('features').value.trim();
             const detailsRaw = document.getElementById('details').value.trim();
             const linkUrl = document.getElementById('linkUrl').value.trim();
+            const published = document.getElementById('published').value === 'true';
             
-            // Массивы
             const features = featuresRaw ? featuresRaw.split(',').map(f => f.trim()).filter(Boolean) : [];
             const details = detailsRaw ? detailsRaw.split('\n').map(d => d.trim()).filter(Boolean) : [];
 
             let imageUrl = null;
 
             try {
+                // 1. Загрузка картинки (если выбрана)
                 const fileInput = document.getElementById('imageFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
@@ -259,12 +295,13 @@
 
                     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                     
+                    // Предполагаем, что функция upload-to-github тоже защищена или мы её обновим позже
                     const response = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                            'apikey': SUPABASE_ANON_KEY
+                            'Authorization': `Bearer ${session.access_token}`,
+                            'apikey': SUPABASE_PUBLISHABLE_KEY
                         },
                         body: JSON.stringify({
                             path: `assets/images/${fileName}`,
@@ -279,6 +316,7 @@
                     imageUrl = result.url;
                 }
 
+                // 2. Сохранение данных через Edge Function
                 const projectData = {
                     title: title, 
                     tag: tag || null, 
@@ -286,21 +324,30 @@
                     features: features, 
                     details: details,
                     link_url: linkUrl || null, 
-                    published: true
+                    published: published
                 };
                 if (imageUrl) projectData.image_url = imageUrl;
 
-                if (editId) {
-                    const { error: dbError } = await db.from('portfolio').update(projectData).eq('id', editId);
-                    if (dbError) throw new Error(dbError.message);
-                    msg.textContent = '✅ Проект обновлен!';
-                } else {
-                    const { error: dbError } = await db.from('portfolio').insert(projectData);
-                    if (dbError) throw new Error(dbError.message);
-                    msg.textContent = '✅ Проект опубликован!';
-                }
+                const action = editId ? 'update' : 'create';
+                if (editId) projectData.id = editId;
 
+                const res = await fetch(`${SUPABASE_URL}/functions/v1/portfolio-admin`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'apikey': SUPABASE_PUBLISHABLE_KEY
+                    },
+                    body: JSON.stringify({ action, payload: projectData })
+                });
+
+                const resData = await res.json();
+                if (!res.ok) throw new Error(resData.error || 'Ошибка сохранения');
+
+                msg.textContent = editId ? '✅ Проект обновлен!' : '✅ Проект опубликован!';
                 msg.className = 'msg ok';
+                
+                // Сброс формы
                 document.getElementById('addForm').reset();
                 document.getElementById('descPreview').innerHTML = '...';
                 document.getElementById('editId').value = '';
@@ -314,8 +361,10 @@
             } catch (err) {
                 msg.textContent = '❌ ' + err.message;
                 msg.className = 'msg error';
+            } finally {
                 btn.disabled = false;
-                btn.textContent = editId ? '💾 Обновить' : '💾 Опубликовать';
+                // Если это было обновление, вернем текст "Обновить"
+                if (editId) btn.textContent = '💾 Обновить';
             }
         };
     </script>
