@@ -123,6 +123,60 @@
             transform: translateY(-2px);
         }
 
+                /* ===== Аккордеон для истории ===== */
+        .story-toggle-btn {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .story-toggle-btn:hover {
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+        .story-toggle-btn h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .story-toggle-btn .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+        .story-toggle-btn.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .story-content-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease;
+            opacity: 0;
+            margin-bottom: 2rem;
+        }
+        .story-content-wrapper.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .story-content-inner {
+            overflow: hidden;
+        }
+
         /* ===== Раздел "История пути" (Таймлайн) ===== */
         .story-section {
             margin-bottom: 4rem;
@@ -573,77 +627,84 @@
             </div>
         </header>
 
-        <!-- ===== ИСТОРИЯ ПУТИ ===== -->
-        <section class="story-section">
-            <h2>От рифмы к коду: Рождение бренда Ádel</h2>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-year">2010 — Начало</div>
-                    <div class="timeline-title">Первые наброски</div>
-                    <div class="timeline-text">
-                        <p>Тогда меня звали просто Дмитрий, и я учился в 6 классе. Всё началось с тетрадки в 12 листов, где я писал стихи и поздравления для родных. Первая проба пера в крупной форме — повесть «Любовь к жизни», которая, увы, была утеряна. Но именно она зажгла во мне тягу к литературе.</p>
-                    </div>
-                </div>
+                <!-- ===== ИСТОРИЯ ПУТИ (АККОРДЕОН) ===== -->
+        <div class="story-toggle-btn" id="storyToggleBtn">
+            <h2>🕰️ От рифмы к коду: История пути</h2>
+            <span class="toggle-icon">▼</span>
+        </div>
+        
+        <div class="story-content-wrapper" id="storyContentWrapper">
+            <div class="story-content-inner">
+                <section class="story-section" style="border: none; padding: 1rem 0;">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2010 — Начало</div>
+                            <div class="timeline-title">Первые наброски</div>
+                            <div class="timeline-text">
+                                <p>Тогда меня звали просто Дмитрий, и я учился в 6 классе. Всё началось с тетрадки в 12 листов, где я писал стихи и поздравления для родных. Первая проба пера в крупной форме — повесть «Любовь к жизни», которая, увы, была утеряна. Но именно она зажгла во мне тягу к литературе.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">2012 — Возвращение</div>
-                    <div class="timeline-title">Стихи и песни</div>
-                    <div class="timeline-text">
-                        <p>Творчество возвращается с произведением «К фонтану». Стихи идут потоком, вдохновлённые влюблённостью и пейзажами. Тогда же появляется тяга к песням Михаила Круга и группы «Бутырка» — я заучивал их и пел во дворе.</p>
-                    </div>
-                </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2012 — Возвращение</div>
+                            <div class="timeline-title">Стихи и песни</div>
+                            <div class="timeline-text">
+                                <p>Творчество возвращается с произведением «К фонтану». Стихи идут потоком, вдохновлённые влюблённостью и пейзажами. Тогда же появляется тяга к песням Михаила Круга и группы «Бутырка» — я заучивал их и пел во дворе.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">2015 — Выход в сеть</div>
-                    <div class="timeline-title">Портал Стихи.ру</div>
-                    <div class="timeline-text">
-                        <p>Мне советовали зарабатывать на стихах, но я твёрдо решил: творчество должно быть бескорыстным. Первое опубликованное произведение — «Капли дождя». С этого момента я окончательно перешёл в интернет-пространство.</p>
-                    </div>
-                </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2015 — Выход в сеть</div>
+                            <div class="timeline-title">Портал Стихи.ру</div>
+                            <div class="timeline-text">
+                                <p>Мне советовали зарабатывать на стихах, но я твёрдо решил: творчество должно быть бескорыстным. Первое опубликованное произведение — «Капли дождя». С этого момента я окончательно перешёл в интернет-пространство.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">2024 — Перелом</div>
-                    <div class="timeline-title">Ангел среди нас</div>
-                    <div class="timeline-text">
-                        <p>Всё меняется после песни Евгения Григорьева «Пушинка». Я записываю свой вариант, и 20 мая появляется песня «Ангел среди нас». Это становится талисманом. Тогда же я становлюсь волонтёром поисковой группы с позывным «Поэт», а образ ангела прочно входит в мою жизнь.</p>
-                    </div>
-                </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2024 — Перелом</div>
+                            <div class="timeline-title">Ангел среди нас</div>
+                            <div class="timeline-text">
+                                <p>Всё меняется после песни Евгения Григорьева «Пушинка». Я записываю свой вариант, и 20 мая появляется песня «Ангел среди нас». Это становится талисманом. Тогда же я становлюсь волонтёром поисковой группы с позывным «Поэт», а образ ангела прочно входит в мою жизнь.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">Конец 2024 — Испания</div>
-                    <div class="timeline-title">Смена имиджа</div>
-                    <div class="timeline-text">
-                        <p>Испанский язык входит в мою жизнь через песню Натальи Орейро. Я начинаю собирать сборник, учить язык, переводить свои стихи. Ник меняется на Ангел поэзии, а затем — на Ángel de la poesía.</p>
-                    </div>
-                </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">Конец 2024 — Испания</div>
+                            <div class="timeline-title">Смена имиджа</div>
+                            <div class="timeline-text">
+                                <p>Испанский язык входит в мою жизнь через песню Натальи Орейро. Я начинаю собирать сборник, учить язык, переводить свои стихи. Ник меняется на Ангел поэзии, а затем — на Ángel de la poesía.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">2025 — Ádel</div>
-                    <div class="timeline-title">Обретение имени</div>
-                    <div class="timeline-text">
-                        <p>Я сокращаю ник до Ádel (Ángel de la poesía). Переход на женский пол происходит в начале 2026 года. Ádel становится литературным псевдонимом. Это не просто имя — это границы: в жизни технарь, в литературе поэтесса.</p>
-                    </div>
-                </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2025 — Ádel</div>
+                            <div class="timeline-title">Обретение имени</div>
+                            <div class="timeline-text">
+                                <p>Я сокращаю ник до Ádel (Ángel de la poesía). Переход на женский пол происходит в начале 2026 года. Ádel становится литературным псевдонимом. Это не просто имя — это границы: в жизни технарь, в литературе поэтесса.</p>
+                            </div>
+                        </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-year">2026 — Бренд</div>
-                    <div class="timeline-title">Рождение проекта</div>
-                    <div class="timeline-text">
-                        <p>В марте 2026 года я создаю литературный архив (более 600 произведений, 25000 читателей). Тогда же пишу свою первую программу для работы в чатах. Сначала на Python, затем переписываю на Java. Под псевдонимом Ádel выходят программы Memstik, Скриптонайзер, социальная сеть Smartsocial и другие утилиты. Настоящее имя — только в паспорте, всё остальное — творчество.</p>
+                        <div class="timeline-item" style="margin-bottom: 0;">
+                            <div class="timeline-year">2026 — Бренд</div>
+                            <div class="timeline-title">Рождение проекта</div>
+                            <div class="timeline-text">
+                                <p>В марте 2026 года я создаю литературный архив (более 600 произведений, 25000 читателей). Тогда же пишу свою первую программу для работы в чатах. Сначала на Python, затем переписываю на Java. Под псевдонимом Ádel выходят программы Memstik, Скриптонайзер, социальная сеть Smartsocial и другие утилиты. Настоящее имя — только в паспорте, всё остальное — творчество.</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Опыт в КЦ -->
+                    <div class="experience-block" style="margin-top: 1.5rem;">
+                        <div class="experience-icon">📞</div>
+                        <div class="experience-content">
+                            <h3>Опыт в клиентском сервисе: 6+ лет</h3>
+                            <p>Мой путь в IT начался не с институтской скамьи, а с реальной работы с людьми. От голосовой поддержки до роли руководителя группы (РГ). Здесь я научился главному: слышать, понимать и решать проблемы. Теперь я делаю то же самое, но кодом — создаю удобные интерфейсы и автоматизирую процессы.</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-
-            <!-- Опыт в КЦ -->
-            <div class="experience-block">
-                <div class="experience-icon">📞</div>
-                <div class="experience-content">
-                    <h3>Опыт в клиентском сервисе: 6+ лет</h3>
-                    <p>Мой путь в IT начался не с институтской скамьи, а с реальной работы с людьми. От голосовой поддержки до роли руководителя группы (РГ). Здесь я научился главному: слышать, понимать и решать проблемы. Теперь я делаю то же самое, но кодом — создаю удобные интерфейсы и автоматизирую процессы.</p>
-                </div>
-            </div>
-        </section>
+        </div>
 
         <!-- ===== ПАНЕЛЬ ФИЛЬТРОВ ===== -->
         <section class="catalog-controls" aria-label="Поиск и фильтры">
@@ -916,6 +977,15 @@
             htmlEl.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             toggleBtn.textContent = newTheme === 'light' ? '☀️' : '🌙';
+        });
+
+                // Логика открытия истории
+        const storyBtn = document.getElementById('storyToggleBtn');
+        const storyContent = document.getElementById('storyContentWrapper');
+        
+        storyBtn.addEventListener('click', () => {
+            storyBtn.classList.toggle('active');
+            storyContent.classList.toggle('active');
         });
 
         loadPortfolio();
